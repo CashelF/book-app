@@ -1,4 +1,4 @@
-from dal.user_repository import UserRepository
+from app.dal.user_repository import UserRepository
 
 class UserService:
     def __init__(self):

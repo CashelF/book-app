@@ -1,34 +1,32 @@
-from sqlalchemy.orm import sessionmaker
-from models.user_model import User, engine
-
-Session = sessionmaker(bind=engine)
+from app.models.user_model import User, db
 
 class UserRepository:
-    def __init__(self):
-        self.session = Session()
-
     def get_user_by_id(self, user_id):
-        return self.session.query(User).filter_by(id=user_id).first()
+        return User.query.get(user_id)
 
-    def add_user(self, name, email):
-        new_user = User(name=name, email=email)
-        self.session.add(new_user)
-        self.session.commit()
+    def add_user(self, username, email, password):
+        new_user = User(username=username, email=email)
+        new_user.set_password(password)
+        db.session.add(new_user)
+        db.session.commit()
         return new_user.id
 
-    def update_user(self, user_id, name, email):
-        user = self.session.query(User).filter_by(id=user_id).first()
+    def update_user(self, user_id, username, email):
+        user = User.query.get(user_id)
         if user:
-            user.name = name
+            user.username = username
             user.email = email
-            self.session.commit()
+            db.session.commit()
             return True
         return False
 
     def delete_user(self, user_id):
-        user = self.session.query(User).filter_by(id=user_id).first()
+        user = User.query.get(user_id)
         if user:
-            self.session.delete(user)
-            self.session.commit()
+            db.session.delete(user)
+            db.session.commit()
             return True
         return False
+    
+    def get_user_by_email(self, email):
+        return User.query.filter_by(email=email).first()

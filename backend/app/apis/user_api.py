@@ -69,7 +69,7 @@ def login_user():
     else:
         return jsonify({"error": "Invalid email or password"}), 401
 
-@app.route('/get-user', methods=['GET'])
+@user_bp.route('/get-user', methods=['GET'])
 def get_user():
     email = request.args.get('email')
     if not email:
