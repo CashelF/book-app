@@ -2,7 +2,10 @@ import React from 'react';
 import { View, Text, Button, Image,TouchableOpacity, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import SearchBar from "react-native-dynamic-search-bar";
-import BookGrid from '../components/BookListEx';
+import BookGrid from '../components/BookListExV2';
+
+const bookIdList1 = ['Ar1jswEACAAJ','-AfkybBr0ooC','ydQiDQAAQBAJ','sI_UG8lLey0C','WzbyEAAAQBAJ','Iu_BAgAAQBAJ','JOgBAAAAYAAJ','N-RSlCrhrpEC'];
+const bookIdList2 = ['EoA7AQAAMAAJ','dbr_9Ff5rOcC','y-37CgAAQBAJ','h4cwEAAAQBAJ','8XwmDwAAQBAJ','Coi9AwAAQBAJ', '9YEOAAAAIAAJ','FFTJDYx_ZiEC'];
 
 const HomeScreen = () => {
     return (
@@ -31,7 +34,7 @@ const HomeScreen = () => {
                 </TouchableOpacity>
             </View> 
             </View>
-            <BookGrid/>
+            <BookGrid bookIds={bookIdList1} />
             </View>
     );
 };
