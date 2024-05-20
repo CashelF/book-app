@@ -5,7 +5,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
-from app.dal.database import engine, Base
+from app.dal.database import db
 from app.api.auth_api import auth_bp
 from app.api.user_api import user_bp
 from app.api.content_api import content_bp
@@ -13,7 +13,6 @@ from app.config import DevelopmentConfig, TestingConfig, ProductionConfig
 import os
 
 bcrypt = Bcrypt()
-db = SQLAlchemy()
 
 def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
@@ -27,7 +26,7 @@ def create_app(config_class=DevelopmentConfig):
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
     app.register_blueprint(user_bp, url_prefix='/api/user')
-    app.register_blueprint(content_bp, url_prefix='/api')
+    app.register_blueprint(content_bp, url_prefix='/api/content')
 
     return app
 

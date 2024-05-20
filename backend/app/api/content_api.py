@@ -1,31 +1,30 @@
 # app/api/content_api.py
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
-from app.services.content_service import create_content, fetch_contents, fetch_content, edit_content, remove_content
+from app.services.content_service import get_all_content, get_content, search_content
 
 content_bp = Blueprint('content_bp', __name__)
 
-@content_bp.route('/contents', methods=['POST'])
+@content_bp.route('/', methods=['GET'])
 @jwt_required()
-def create_content():
-    data = request.get_json()
-    return create_content(data)
+def get_all_content_endpoint():
+    page = request.args.get('page', 1, type=int)
+    per_page = request.args.get('per_page', 10, type=int)
+    content_items, total, pages, current_page = get_all_content(page, per_page)
+    return jsonify({
+        'content': content_items,
+        'total': total,
+        'pages': pages,
+        'current_page': current_page
+    }), 200
 
-@content_bp.route('/contents', methods=['GET'])
-def fetch_contents():
-    return fetch_contents()
-
-@content_bp.route('/contents/<int:id>', methods=['GET'])
+@content_bp.route('/<int:id>', methods=['GET'])
 def fetch_content(id):
-    return fetch_content(id)
+    return get_content(id)
 
-@content_bp.route('/contents/<int:id>', methods=['PUT'])
+@content_bp.route('/search', methods=['GET'])
 @jwt_required()
-def edit_content(id):
-    data = request.get_json()
-    return edit_content(id, data)
-
-@content_bp.route('/contents/<int:id>', methods=['DELETE'])
-@jwt_required()
-def remove_content(id):
-    return remove_content(id)
+def search_content_endpoint():
+    query = request.args.get('q', '', type=str)
+    content_items = search_content(query)
+    return jsonify(content_items), 200

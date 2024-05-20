@@ -7,6 +7,7 @@ from flask_jwt_extended import create_access_token
 bcrypt = Bcrypt()
 
 def register_user(data):
+    print('DATA: ', data['password'], data['username'], data['email'])
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
     new_user = User(username=data['username'], email=data['email'], password_hash=hashed_password)
     add_user(new_user)
@@ -15,6 +16,6 @@ def register_user(data):
 def login_user(data):
     user = get_user_by_email(data['email'])
     if user and bcrypt.check_password_hash(user.password_hash, data['password']):
-        access_token = create_access_token(identity=user.id)
+        access_token = create_access_token(identity=user.user_id)
         return {'access_token': access_token}, 200
     return {'message': 'Invalid credentials'}, 401

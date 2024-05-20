@@ -1,9 +1,9 @@
 from sqlalchemy import Column, Integer, String, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from app.dal.database import Base
+from app.dal.database import db
 
-class User(Base):
+class User(db.Model):
     __tablename__ = 'users'
     
     user_id = Column(Integer, primary_key=True, autoincrement=True)
@@ -13,4 +13,3 @@ class User(Base):
     created_at = Column(TIMESTAMP, default=func.now())
     
     interactions = relationship("Interaction", back_populates="user")
-    preferences = relationship("UserPreference", back_populates="user")

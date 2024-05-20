@@ -1,21 +1,12 @@
-# app/dal/user_repository.py
 from app.models.user_model import User
-from app.dal.database import SessionLocal
+from app.dal.database import db
 
 def add_user(user):
-    session = SessionLocal()
-    session.add(user)
-    session.commit()
-    session.close()
+    db.session.add(user)
+    db.session.commit()
 
 def get_user_by_email(email):
-    session = SessionLocal()
-    user = session.query(User).filter_by(email=email).first()
-    session.close()
-    return user
+    return User.query.filter_by(email=email).first()
 
 def get_user_by_id(user_id):
-    session = SessionLocal()
-    user = session.query(User).get(user_id)
-    session.close()
-    return user
+    return User.query.get(user_id)

@@ -1,8 +1,8 @@
 from sqlalchemy import Column, Integer, String, Enum, Text, TIMESTAMP
 from sqlalchemy.orm import relationship
-from app.dal.database import Base
+from app.dal.database import db
 
-class Content(Base):
+class Content(db.Model):
     __tablename__ = 'content'
     
     content_id = Column(Integer, primary_key=True, autoincrement=True)
@@ -15,4 +15,3 @@ class Content(Base):
     cover_image_url = Column(String(255))
     
     interactions = relationship("Interaction", back_populates="content")
-    features = relationship("ContentFeature", back_populates="content")
