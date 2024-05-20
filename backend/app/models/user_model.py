@@ -1,21 +1,16 @@
-from flask_sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash, check_password_hash
+from sqlalchemy import Column, Integer, String, TIMESTAMP
+from sqlalchemy.orm import relationship
+from sqlalchemy.sql import func
+from app.dal.database import Base
 
-db = SQLAlchemy()
-
-class User(db.Model):
+class User(Base):
     __tablename__ = 'users'
     
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(120), index=True, unique=True)
-    password_hash = db.Column(db.String(128))
-
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
-
-    def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
-
-    def __repr__(self):
-        return '<User {}>'.format(self.username)
+    user_id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String(255), unique=True, nullable=False)
+    email = Column(String(255), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    created_at = Column(TIMESTAMP, default=func.now())
+    
+    interactions = relationship("Interaction", back_populates="user")
+    preferences = relationship("UserPreference", back_populates="user")
