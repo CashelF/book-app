@@ -4,7 +4,7 @@ from flask import Flask
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_bcrypt import Bcrypt
-from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from app.dal.database import db
 from app.api.auth_api import auth_bp
 from app.api.user_api import user_bp
@@ -13,6 +13,7 @@ from app.config import DevelopmentConfig, TestingConfig, ProductionConfig
 import os
 
 bcrypt = Bcrypt()
+migrate = Migrate()
 
 def create_app(config_class=DevelopmentConfig):
     app = Flask(__name__)
@@ -20,7 +21,8 @@ def create_app(config_class=DevelopmentConfig):
     app.config.from_object(config_class)
     app.static_url_path = '/static'
 
-    jwt = JWTManager(app)
+    JWTManager(app)
+    migrate.init_app(app, db)
     bcrypt.init_app(app)
     db.init_app(app)
 
