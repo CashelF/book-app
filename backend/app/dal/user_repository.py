@@ -1,32 +1,21 @@
-from app.models.user_model import User, db
+# app/dal/user_repository.py
+from app.models.user_model import User
+from app.dal.database import SessionLocal
 
-class UserRepository:
-    def get_user_by_id(self, user_id):
-        return User.query.get(user_id)
+def add_user(user):
+    session = SessionLocal()
+    session.add(user)
+    session.commit()
+    session.close()
 
-    def add_user(self, username, email, password):
-        new_user = User(username=username, email=email)
-        new_user.set_password(password)
-        db.session.add(new_user)
-        db.session.commit()
-        return new_user.id
+def get_user_by_email(email):
+    session = SessionLocal()
+    user = session.query(User).filter_by(email=email).first()
+    session.close()
+    return user
 
-    def update_user(self, user_id, username, email):
-        user = User.query.get(user_id)
-        if user:
-            user.username = username
-            user.email = email
-            db.session.commit()
-            return True
-        return False
-
-    def delete_user(self, user_id):
-        user = User.query.get(user_id)
-        if user:
-            db.session.delete(user)
-            db.session.commit()
-            return True
-        return False
-    
-    def get_user_by_email(self, email):
-        return User.query.filter_by(email=email).first()
+def get_user_by_id(user_id):
+    session = SessionLocal()
+    user = session.query(User).get(user_id)
+    session.close()
+    return user

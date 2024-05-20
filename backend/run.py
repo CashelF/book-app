@@ -1,6 +1,8 @@
-from app import create_app
+# run.py
 
-app = create_app()
+from app import create_app, config_class
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0')  # debug=True should indeed only be for development!
+app = create_app(config_class)
+
+if __name__ == "__main__":
+    app.run()
