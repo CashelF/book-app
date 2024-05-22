@@ -27,7 +27,7 @@ def search_content(query):
     content_items = search_content_by_query(query)
     return [
         {
-            "id": content.content_id,
+            "id": content.id,
             "title": content.title,
             "description": content.description,
             "cover_image": content.cover_image_url

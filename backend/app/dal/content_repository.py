@@ -1,6 +1,10 @@
 from app.models.content_model import Content
 from app.dal.database import db
 
+def get_all_content():
+    content_items = Content.query.all()
+    return content_items
+
 def get_all_content_paginated(page, per_page):
     pagination = Content.query.paginate(page=page, per_page=per_page, error_out=False)
     return pagination.items, pagination.total, pagination.pages, pagination.page
