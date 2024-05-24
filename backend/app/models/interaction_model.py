@@ -7,7 +7,7 @@ class Interaction(db.Model):
     
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
-    content_id = Column(Integer, nullable=False)
+    content_id = Column(Integer, ForeignKey('content.id'), nullable=False)
     interaction_type = Column(String(50), nullable=False)  # e.g., 'like', 'save', 'view'
     reward = Column(Float, nullable=False)
     timestamp = Column(Date, nullable=True)

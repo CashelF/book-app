@@ -13,3 +13,6 @@ def add_interaction(user_id, content_id, interaction_type, reward):
 
 def get_interactions_by_content_id(content_id):
     return Interaction.query.filter_by(content_id=content_id).all()
+
+def get_user_interactions(user_id):
+    return Interaction.query.filter_by(user_id=user_id).all()

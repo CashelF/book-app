@@ -10,6 +10,7 @@ from app.api.auth_api import auth_bp
 from app.api.user_api import user_bp
 from app.api.content_api import content_bp
 from app.api.interaction_api import interaction_bp
+from app.api.recommendation_api import recommendation_bp
 from app.config import DevelopmentConfig, TestingConfig, ProductionConfig
 import os
 
@@ -31,6 +32,7 @@ def create_app(config_class=DevelopmentConfig):
     app.register_blueprint(user_bp, url_prefix='/api/user')
     app.register_blueprint(content_bp, url_prefix='/api/content')
     app.register_blueprint(interaction_bp, url_prefix='/api/interaction')
+    app.register_blueprint(recommendation_bp, url_prefix='/api/recommendation')
 
     return app
 

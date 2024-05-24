@@ -1,4 +1,4 @@
-from app.dal.interaction_repository import add_interaction, get_interactions_by_content_id
+from app.dal.interaction_repository import add_interaction, get_interactions_by_content_id, get_user_interactions
 from app.dal.user_repository import get_user_by_id
 from app.dal.content_repository import get_content_by_id
 from .bandits.thompson_sampling import bandit
@@ -18,11 +18,7 @@ def record_interaction(user_id, content_id, interaction_type, reward):
     add_interaction(user_id, content_id, interaction_type, reward)
 
 def get_interactions_for_content(content_id):
-    interactions = get_interactions_by_content_id(content_id)
-    return [{
-        "user_id": interaction.user_id,
-        "content_id": interaction.content_id,
-        "interaction_type": interaction.interaction_type,
-        "reward": interaction.reward,
-        "timestamp": interaction.timestamp
-    } for interaction in interactions]
+    return get_interactions_by_content_id(content_id)
+    
+def get_user_interactions(user_id):
+    return get_user_interactions(user_id)

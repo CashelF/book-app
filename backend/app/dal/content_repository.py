@@ -9,6 +9,9 @@ def get_all_content_paginated(page, per_page):
     pagination = Content.query.paginate(page=page, per_page=per_page, error_out=False)
     return pagination.items, pagination.total, pagination.pages, pagination.page
 
+def get_content_batch(batch_size, offset):
+    return Content.query.offset(offset).limit(batch_size).all()
+
 def get_content_by_id(content_id):
     content = Content.query.get(content_id)
     return content
