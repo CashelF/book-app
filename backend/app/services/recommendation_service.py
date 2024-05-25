@@ -37,6 +37,7 @@ def get_recommendations(user, batch_size=10, num_recommendations=10):
             if content.embedding is not None:
                 embedding = np.frombuffer(content.embedding, dtype=np.float32)
                 features = np.concatenate((context, embedding))
+                print("SHAPES::::", embedding.shape, features.shape)
                 action_value = bandit.get_action(features)
                 batch_recommendations.append((action_value, content))
 

@@ -1,18 +1,24 @@
-import openai
+import sys
+import os
+
+# Adjust the PYTHONPATH
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from openai import OpenAI
 import numpy as np
 from app import create_app
 from app.dal.database import db
 from app.models.content_model import Content
 
-# OpenAI API key
-openai.api_key = 'openai_api_key'
+client = OpenAI()
 
-def generate_embedding(text):
-    response = openai.Embedding.create(input=text, model="text-embedding-ada-002")
-    return np.array(response['data'][0]['embedding'])
+def generate_embedding(text, model="text-embedding-3-small"):
+   text = text.replace("\n", " ")
+   return client.embeddings.create(input = [text], model=model).data[0].embedding
 
 def store_embedding(content_id, embedding):
-    binary_embedding = embedding.tobytes()
+    embedding_array = np.array(embedding, dtype=np.float32)
+    binary_embedding = embedding_array.tobytes()
     content = Content.query.get(content_id)
     content.embedding = binary_embedding
     db.session.commit()

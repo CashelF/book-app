@@ -35,10 +35,14 @@ def fetch_content(id):
         content = get_content(id)
         if not content:
             return jsonify({'message': 'Content not found'}), 404
+        authors = [
+            {"id": author.id, "name": author.name}
+            for author in content.authors
+        ]
         return jsonify({
             'id': content.id,
             'title': content.title,
-            'author': content.author,
+            'authors': authors,
             'description': content.description,
             'cover_image': content.cover_image_url
         }), 200

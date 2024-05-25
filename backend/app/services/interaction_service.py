@@ -1,4 +1,5 @@
 from app.dal.interaction_repository import add_interaction, get_interactions_by_content_id, get_user_interactions
+from app.dal.interaction_repository import get_user_interactions as dal_get_user_interactions
 from app.dal.user_repository import get_user_by_id
 from app.dal.content_repository import get_content_by_id
 from .bandits.thompson_sampling import bandit
@@ -21,4 +22,4 @@ def get_interactions_for_content(content_id):
     return get_interactions_by_content_id(content_id)
     
 def get_user_interactions(user_id):
-    return get_user_interactions(user_id)
+    return dal_get_user_interactions(user_id)
