@@ -1,4 +1,5 @@
 # app/models/user_model.py
+
 from sqlalchemy import Column, Integer, String, Float, Enum, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
@@ -19,9 +20,8 @@ class User(db.Model):
     location_longitude = Column(Float, nullable=True)
     average_rating = Column(Float, nullable=True)
     number_of_books_read = Column(Integer, nullable=True)
-    device_type = Column(String(50), nullable=True)
-    theme = Column(String(50), nullable=True)
-    font_size = Column(String(50), nullable=True)
+    theme = Column(Enum('light', 'dark'), nullable=True)
+    font_size = Column(Integer, nullable=True)
     click_through_rate = Column(Float, nullable=True)
     engagement_rate = Column(Float, nullable=True)
 
