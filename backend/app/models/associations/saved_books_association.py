@@ -1,3 +1,4 @@
+# app/models/associations/saved_books_association.py
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from app.dal.database import db
 

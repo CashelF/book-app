@@ -1,3 +1,4 @@
+# app/models/user_model.py
 from sqlalchemy import Column, Integer, String, Float, Enum, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func

@@ -1,3 +1,4 @@
+# app/models/interaction_model.py
 from sqlalchemy import Column, Integer, String, Float, ForeignKey, Date
 from sqlalchemy.orm import relationship
 from app.dal.database import db

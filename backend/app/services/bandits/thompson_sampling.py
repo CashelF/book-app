@@ -1,3 +1,4 @@
+# app/services/bandits/thompson_sampling.py
 import numpy as np
 # TODO: check if this is the correct implementation
 class ThompsonSamplingBandit:

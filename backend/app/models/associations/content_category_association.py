@@ -1,3 +1,4 @@
+# app/models/associations/content_category_association.py
 from sqlalchemy import Table, Column, Integer, ForeignKey
 from app.dal.database import db
 

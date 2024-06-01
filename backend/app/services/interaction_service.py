@@ -1,3 +1,4 @@
+# app/services/interaction_service.py
 from app.dal.interaction_repository import add_interaction, get_interactions_by_content_id, get_user_interactions
 from app.dal.interaction_repository import get_user_interactions as dal_get_user_interactions
 from app.dal.user_repository import get_user_by_id

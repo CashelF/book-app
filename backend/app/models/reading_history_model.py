@@ -1,3 +1,4 @@
+# app/models/reading_history_model.py
 from sqlalchemy import Column, Integer, Float, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from app.dal.database import db

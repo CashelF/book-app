@@ -1,3 +1,4 @@
+# app/dal/user_repository.py
 from app.models.user_model import User
 from app.dal.database import db
 

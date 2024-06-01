@@ -1,3 +1,4 @@
+# app/dal/interaction_repository.py
 from app.models.interaction_model import Interaction
 from app.dal.database import db
 

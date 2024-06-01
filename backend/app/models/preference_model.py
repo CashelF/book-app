@@ -1,3 +1,4 @@
+# app/models/preference_model.py
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
 from app.dal.database import db

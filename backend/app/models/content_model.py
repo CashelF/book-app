@@ -1,3 +1,4 @@
+# app/models/content_model.py
 from sqlalchemy import Column, Integer, String, Enum, Text, Table, ForeignKey, LargeBinary
 from sqlalchemy.orm import relationship
 from app.dal.database import db

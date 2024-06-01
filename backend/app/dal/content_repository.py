@@ -1,3 +1,4 @@
+# app/dal/content_repository.py
 from app.models.content_model import Content
 from app.dal.database import db
 

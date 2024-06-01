@@ -1,3 +1,4 @@
+# app/api/interaction_api.py
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.interaction_service import record_interaction, get_interactions_for_content
