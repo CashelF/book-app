@@ -1,3 +1,4 @@
+# app/utils/hashing_utils.py
 import bcrypt
 
 def hash_password(password):

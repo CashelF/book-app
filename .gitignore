@@ -36,3 +36,5 @@ yarn-error.*
 
 backend/**/__pycache__/
 backend/venv/
+backend/.env
+backend/scripts/filtered_books.csv
