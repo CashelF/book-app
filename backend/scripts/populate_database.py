@@ -12,8 +12,8 @@ from app import create_app, db
 from app.models import Content, Author, Genre, Category
 
 # Google Books API key
-API_KEY = 'API_KEY'
-MIN_REVIEWS = 50  # A threshold for the minimum number of reviews
+API_KEY = 'AIzaSyCXtMtLoWlOUAGC1zWnyqfebxEq65mck9U'
+MIN_REVIEWS = 100  # A threshold for the minimum number of reviews
 
 # Function to search for data using the Google Books API
 def search_data(isbn):

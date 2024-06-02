@@ -1,13 +1,11 @@
 # app/models/author_model.py
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
 from app.dal.database import db
 from .associations.content_author_association import content_author_association
 
 class Author(db.Model):
     __tablename__ = 'author'
     
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(255), nullable=False)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(255), nullable=False)
 
-    contents = relationship('Content', secondary=content_author_association, back_populates='authors')
+    contents = db.relationship('Content', secondary=content_author_association, back_populates='authors')

@@ -1,8 +1,7 @@
 # app/models/associations/content_author_association.py
-from sqlalchemy import Table, Column, Integer, ForeignKey
 from app.dal.database import db
 
-content_author_association = Table('content_author_association', db.Model.metadata,
-    Column('content_id', Integer, ForeignKey('content.id'), primary_key=True),
-    Column('author_id', Integer, ForeignKey('author.id'), primary_key=True)
+content_author_association = db.Table('content_author_association',
+    db.Column('content_id', db.Integer, db.ForeignKey('content.id'), primary_key=True),
+    db.Column('author_id', db.Integer, db.ForeignKey('author.id'), primary_key=True)
 )

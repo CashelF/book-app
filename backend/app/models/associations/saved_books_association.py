@@ -1,8 +1,7 @@
 # app/models/associations/saved_books_association.py
-from sqlalchemy import Table, Column, Integer, ForeignKey
 from app.dal.database import db
 
-saved_books = Table('saved_books', db.Model.metadata,
-    Column('user_id', Integer, ForeignKey('users.id'), primary_key=True),
-    Column('book_id', Integer, ForeignKey('content.id'), primary_key=True)
+saved_books = db.Table('saved_books',
+    db.Column('user_id', db.Integer, db.ForeignKey('users.id'), primary_key=True),
+    db.Column('book_id', db.Integer, db.ForeignKey('content.id'), primary_key=True)
 )
