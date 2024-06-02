@@ -12,8 +12,16 @@ def record():
     data = request.get_json()
     content_id = data.get('content_id')
     interaction_type = data.get('interaction_type')
-    reward = data.get('reward')
-    record_interaction(user_id, content_id, interaction_type, reward)
+    duration = data.get('duration')  # Include duration for 'view' interactions if applicable
+    
+    if not content_id or not interaction_type:
+        return jsonify({"error": "Content ID and interaction type are required"}), 400
+    
+    # Validate interaction type
+    if interaction_type not in ['like', 'save', 'view']:
+        return jsonify({"error": "Invalid interaction type"}), 400
+
+    record_interaction(user_id, content_id, interaction_type, duration)
     return jsonify({"message": "Interaction recorded"}), 200
 
 @interaction_bp.route('/content/<int:content_id>/interactions', methods=['GET'])

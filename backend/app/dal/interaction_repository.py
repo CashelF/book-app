@@ -1,13 +1,14 @@
 # app/dal/interaction_repository.py
-from app.models.interaction_model import Interaction
+from app.models.interaction_model import Interaction, InteractionType
 from app.dal.database import db
 
-def add_interaction(user_id, content_id, interaction_type, reward):
+def add_interaction(user_id, content_id, interaction_type, timestamp, duration=None):
     interaction = Interaction(
         user_id=user_id,
         content_id=content_id,
-        interaction_type=interaction_type,
-        reward=reward
+        interaction_type=InteractionType(interaction_type),
+        timestamp=timestamp,
+        duration=duration if interaction_type == 'view' else None
     )
     db.session.add(interaction)
     db.session.commit()
