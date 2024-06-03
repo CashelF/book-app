@@ -1,7 +1,7 @@
 # app/api/interaction_api.py
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.services.interaction_service import record_interaction, get_interactions_for_content
+from app.services.interaction_service import record_interaction
 
 interaction_bp = Blueprint('interaction_bp', __name__)
 
@@ -23,9 +23,3 @@ def record():
 
     record_interaction(user_id, content_id, interaction_type, duration)
     return jsonify({"message": "Interaction recorded"}), 200
-
-@interaction_bp.route('/content/<int:content_id>/interactions', methods=['GET'])
-@jwt_required()
-def get_content_interactions(content_id):
-    interactions = get_interactions_for_content(content_id)
-    return jsonify(interactions), 200
