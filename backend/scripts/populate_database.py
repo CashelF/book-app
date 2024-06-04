@@ -9,7 +9,7 @@ import pandas as pd
 import time
 from flask import Flask
 from app import create_app, db
-from app.models import Content, Author, Genre, Category
+from app.models import Book, Author, Genre, Category
 
 # Google Books API key
 API_KEY = 'AIzaSyCXtMtLoWlOUAGC1zWnyqfebxEq65mck9U'
@@ -60,9 +60,9 @@ def extract_info(data, ratings_count):
 
 # Function to check if an entry already exists in the database
 def entry_exists(isbn_13, title, authors):
-    query = Content.query.filter(
-        (Content.ISBN == isbn_13) |
-        (Content.title == title)
+    query = Book.query.filter(
+        (Book.ISBN == isbn_13) |
+        (Book.title == title)
     )
     
     for entry in query:
@@ -78,7 +78,7 @@ def populate_database(entries):
         if entry_exists(entry['isbn_13'], entry['title'], entry['authors']):
             continue
         
-        content = Content(
+        book = Book(
             title=entry['title'],
             ISBN=entry['isbn_13'],
             type='book',
@@ -93,23 +93,23 @@ def populate_database(entries):
             author = Author.query.filter_by(name=author_name).first()
             if not author:
                 author = Author(name=author_name)
-            content.authors.append(author)
+            book.authors.append(author)
         
         # Add genres
         for genre_name in entry['categories']:
             genre = Genre.query.filter_by(name=genre_name).first()
             if not genre:
                 genre = Genre(name=genre_name)
-            content.genres.append(genre)
+            book.genres.append(genre)
         
         # Add categories
         for category_name in entry['categories']:
             category = Category.query.filter_by(name=category_name).first()
             if not category:
                 category = Category(name=category_name)
-            content.categories.append(category)
+            book.categories.append(category)
 
-        db.session.add(content)
+        db.session.add(book)
     
     db.session.commit()
 

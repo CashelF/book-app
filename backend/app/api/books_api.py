@@ -1,27 +1,27 @@
-# app/api/content_api.py
+# app/api/books_api.py
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
-from app.services.content_service import get_all_content, get_content, search_content
+from app.services.book_service import get_all_books, get_books, search_books
 
-content_bp = Blueprint('content_bp', __name__)
+books_bp = Blueprint('books_bp', __name__)
 
-@content_bp.route('/', methods=['GET'])
+@books_bp.route('/', methods=['GET'])
 @jwt_required()
-def fetch_all_content():
+def fetch_all_book():
     try:
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
-        content_items, total, pages, current_page = get_all_content(page, per_page)
-        content = [
+        book_items, total, pages, current_page = get_all_books(page, per_page)
+        book = [
             {
                 "id": item.id,
                 "title": item.title,
                 "description": item.description,
                 "cover_image": item.cover_image_url
-            } for item in content_items
+            } for item in book_items
         ]
         return jsonify({
-            'content': content,
+            'book': book,
             'total': total,
             'pages': pages,
             'current_page': current_page
@@ -29,40 +29,40 @@ def fetch_all_content():
     except Exception as e:
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
 
-@content_bp.route('/<int:id>', methods=['GET'])
-def fetch_content(id):
+@books_bp.route('/<int:id>', methods=['GET'])
+def fetch_book(id):
     try:
-        content = get_content(id)
-        if not content:
-            return jsonify({'message': 'Content not found'}), 404
+        book = get_books(id)
+        if not book:
+            return jsonify({'message': 'book not found'}), 404
         authors = [
             {"id": author.id, "name": author.name}
-            for author in content.authors
+            for author in book.authors
         ]
         return jsonify({
-            'id': content.id,
-            'title': content.title,
+            'id': book.id,
+            'title': book.title,
             'authors': authors,
-            'description': content.description,
-            'cover_image': content.cover_image_url
+            'description': book.description,
+            'cover_image': book.cover_image_url
         }), 200
     except Exception as e:
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
 
-@content_bp.route('/search', methods=['GET'])
+@books_bp.route('/search', methods=['GET'])
 @jwt_required()
-def search_content_endpoint():
+def search_book_endpoint():
     try:
         query = request.args.get('q', '', type=str)
-        content_items = search_content(query)
-        content = [
+        book_items = search_books(query)
+        book = [
             {
                 "id": item.id,
                 "title": item.title,
                 "description": item.description,
                 "cover_image": item.cover_image_url
-            } for item in content_items
+            } for item in book_items
         ]
-        return jsonify(content), 200
+        return jsonify(book), 200
     except Exception as e:
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500

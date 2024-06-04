@@ -7,10 +7,10 @@ from flask_bcrypt import Bcrypt
 from flask_migrate import Migrate
 from app.dal.database import db
 from app.api.auth_api import auth_bp
-from app.api.user_api import user_bp
-from app.api.content_api import content_bp
-from app.api.interaction_api import interaction_bp
-from app.api.recommendation_api import recommendation_bp
+from app.api.users_api import users_bp
+from app.api.books_api import books_bp
+from app.api.interactions_api import interactions_bp
+from app.api.recommendations_api import recommendations_bp
 from app.config import DevelopmentConfig, TestingConfig, ProductionConfig
 import os
 
@@ -29,10 +29,10 @@ def create_app(config_class=DevelopmentConfig):
     db.init_app(app)
 
     app.register_blueprint(auth_bp, url_prefix='/api/auth')
-    app.register_blueprint(user_bp, url_prefix='/api/user')
-    app.register_blueprint(content_bp, url_prefix='/api/content')
-    app.register_blueprint(interaction_bp, url_prefix='/api/interaction')
-    app.register_blueprint(recommendation_bp, url_prefix='/api/recommendation')
+    app.register_blueprint(users_bp, url_prefix='/api/users')
+    app.register_blueprint(books_bp, url_prefix='/api/books')
+    app.register_blueprint(interactions_bp, url_prefix='/api/interactions')
+    app.register_blueprint(recommendations_bp, url_prefix='/api/recommendations')
 
     return app
 

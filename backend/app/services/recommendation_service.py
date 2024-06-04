@@ -1,7 +1,7 @@
 # app/services/recommendation_service.py
 from datetime import datetime, timedelta
 from flask import session
-from app.dal.content_repository import get_content_batch
+from app.dal.book_repository import get_book_batch
 from app.services.interaction_service import get_user_interactions
 from .bandits.thompson_sampling import bandit
 from app.utils.context_utils import get_user_context
@@ -19,28 +19,28 @@ def get_recommendations(user, batch_size=10, num_recommendations=10):
         session[session_key] = []
 
     interactions = get_user_interactions(user_id)
-    viewed_books = {interaction.content_id for interaction in interactions if interaction.timestamp > datetime.now() - FREQUENCY_CAPPING_DURATION}
+    viewed_books = {interaction.book_id for interaction in interactions if interaction.timestamp > datetime.now() - FREQUENCY_CAPPING_DURATION}
 
     offset = 0
     recommendations = []
 
     while len(recommendations) < num_recommendations:
-        content_batch = get_content_batch(batch_size=batch_size, offset=offset)
-        if not content_batch:
+        book_batch = get_book_batch(batch_size=batch_size, offset=offset)
+        if not book_batch:
             break
         
         batch_recommendations = []
 
-        for content in content_batch:
-            if content.id in viewed_books:
-                continue  # Skip content that has been viewed recently
+        for book in book_batch:
+            if book.id in viewed_books:
+                continue  # Skip book that has been viewed recently
             
-            if content.embedding is not None:
-                embedding = np.frombuffer(content.embedding, dtype=np.float32)
+            if book.embedding is not None:
+                embedding = np.frombuffer(book.embedding, dtype=np.float32)
                 features = np.concatenate((context, embedding))
                 print("SHAPES::::", embedding.shape, features.shape)
                 action_value = bandit.get_action(features)
-                batch_recommendations.append((action_value, content))
+                batch_recommendations.append((action_value, book))
 
         recommendations.extend(batch_recommendations)
         offset += batch_size

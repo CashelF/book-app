@@ -8,7 +8,7 @@ from openai import OpenAI
 import numpy as np
 from app import create_app
 from app.dal.database import db
-from app.models.content_model import Content
+from app.models.book_model import Book
 
 client = OpenAI()
 
@@ -16,21 +16,21 @@ def generate_embedding(text, model="text-embedding-3-small"):
    text = text.replace("\n", " ")
    return client.embeddings.create(input = [text], model=model).data[0].embedding
 
-def store_embedding(content_id, embedding):
+def store_embedding(book_id, embedding):
     embedding_array = np.array(embedding, dtype=np.float32)
     binary_embedding = embedding_array.tobytes()
-    content = Content.query.get(content_id)
-    content.embedding = binary_embedding
+    book = book.query.get(book_id)
+    book.embedding = binary_embedding
     db.session.commit()
     
 
 if __name__ == "__main__":
     app = create_app()
     with app.app_context():
-        # Fetch all content descriptions that don't have embeddings yet
-        contents = Content.query.filter(Content.embedding.is_(None)).all()
-        for content in contents:
-            if content.description:
-                embedding = generate_embedding(content.description)
-                store_embedding(content.id, embedding)
-                print(f"Stored embedding for content_id {content.id}")
+        # Fetch all book descriptions that don't have embeddings yet
+        books = Book.query.filter(Book.embedding.is_(None)).all()
+        for book in books:
+            if book.description:
+                embedding = generate_embedding(book.description)
+                store_embedding(book.id, embedding)
+                print(f"Stored embedding for book_id {book.id}")

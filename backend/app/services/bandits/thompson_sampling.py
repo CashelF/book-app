@@ -27,4 +27,4 @@ class ThompsonSamplingBandit:
 embedding_dim = 768
 user_context_dim = 13 # Update this value if the user context dimension changes
 n_features = embedding_dim + user_context_dim
-bandit = ThompsonSamplingBandit(n_actions=20, n_features=n_features) # TODO: Update n_actions to the number of content items automatically, use the same bandit as the recommendation service
+bandit = ThompsonSamplingBandit(n_actions=20, n_features=n_features) # TODO: Update n_actions to the number of book items automatically, use the same bandit as the recommendation service

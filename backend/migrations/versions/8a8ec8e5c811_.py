@@ -1,8 +1,8 @@
-"""Initial migration.
+"""empty message
 
-Revision ID: 80b008cc01ff
+Revision ID: 8a8ec8e5c811
 Revises: 
-Create Date: 2024-05-22 14:46:54.531652
+Create Date: 2024-06-03 18:56:17.535701
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '80b008cc01ff'
+revision = '8a8ec8e5c811'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -23,12 +23,7 @@ def upgrade():
     sa.Column('name', sa.String(length=255), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
-    op.create_table('category',
-    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
-    sa.Column('name', sa.String(length=100), nullable=False),
-    sa.PrimaryKeyConstraint('id')
-    )
-    op.create_table('content',
+    op.create_table('books',
     sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
     sa.Column('ISBN', sa.String(length=13), nullable=True),
     sa.Column('title', sa.String(length=255), nullable=False),
@@ -38,6 +33,11 @@ def upgrade():
     sa.Column('page_length', sa.Integer(), nullable=True),
     sa.Column('cover_image_url', sa.String(length=255), nullable=True),
     sa.Column('embedding', sa.LargeBinary(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('category',
+    sa.Column('id', sa.Integer(), autoincrement=True, nullable=False),
+    sa.Column('name', sa.String(length=100), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('genre',
@@ -57,46 +57,51 @@ def upgrade():
     sa.Column('location_longitude', sa.Float(), nullable=True),
     sa.Column('average_rating', sa.Float(), nullable=True),
     sa.Column('number_of_books_read', sa.Integer(), nullable=True),
-    sa.Column('device_type', sa.String(length=50), nullable=True),
-    sa.Column('theme', sa.String(length=50), nullable=True),
-    sa.Column('font_size', sa.String(length=50), nullable=True),
+    sa.Column('theme', sa.Enum('light', 'dark'), nullable=True),
+    sa.Column('font_size', sa.Integer(), nullable=True),
     sa.Column('click_through_rate', sa.Float(), nullable=True),
     sa.Column('engagement_rate', sa.Float(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
     sa.UniqueConstraint('username')
     )
-    op.create_table('content_author_association',
-    sa.Column('content_id', sa.Integer(), nullable=False),
+    op.create_table('book_author_association',
+    sa.Column('book_id', sa.Integer(), nullable=False),
     sa.Column('author_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['author_id'], ['author.id'], ),
-    sa.ForeignKeyConstraint(['content_id'], ['content.id'], ),
-    sa.PrimaryKeyConstraint('content_id', 'author_id')
+    sa.ForeignKeyConstraint(['book_id'], ['books.id'], ),
+    sa.PrimaryKeyConstraint('book_id', 'author_id')
     )
-    op.create_table('content_category_association',
-    sa.Column('content_id', sa.Integer(), nullable=False),
+    op.create_table('book_category_association',
+    sa.Column('book_id', sa.Integer(), nullable=False),
     sa.Column('category_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['book_id'], ['books.id'], ),
     sa.ForeignKeyConstraint(['category_id'], ['category.id'], ),
-    sa.ForeignKeyConstraint(['content_id'], ['content.id'], ),
-    sa.PrimaryKeyConstraint('content_id', 'category_id')
+    sa.PrimaryKeyConstraint('book_id', 'category_id')
     )
-    op.create_table('content_genre_association',
-    sa.Column('content_id', sa.Integer(), nullable=False),
+    op.create_table('book_genre_association',
+    sa.Column('book_id', sa.Integer(), nullable=False),
     sa.Column('genre_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['content_id'], ['content.id'], ),
+    sa.ForeignKeyConstraint(['book_id'], ['books.id'], ),
     sa.ForeignKeyConstraint(['genre_id'], ['genre.id'], ),
-    sa.PrimaryKeyConstraint('content_id', 'genre_id')
+    sa.PrimaryKeyConstraint('book_id', 'genre_id')
     )
     op.create_table('interactions',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
-    sa.Column('content_id', sa.Integer(), nullable=False),
-    sa.Column('interaction_type', sa.String(length=50), nullable=False),
-    sa.Column('reward', sa.Float(), nullable=False),
-    sa.Column('timestamp', sa.Date(), nullable=True),
+    sa.Column('book_id', sa.Integer(), nullable=False),
+    sa.Column('interaction_type', sa.Enum('LIKE', 'SAVE', 'VIEW', name='interactiontype'), nullable=False),
+    sa.Column('timestamp', sa.DateTime(), nullable=True),
+    sa.Column('duration', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['book_id'], ['books.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    with op.batch_alter_table('interactions', schema=None) as batch_op:
+        batch_op.create_index(batch_op.f('ix_interactions_book_id'), ['book_id'], unique=False)
+        batch_op.create_index(batch_op.f('ix_interactions_interaction_type'), ['interaction_type'], unique=False)
+        batch_op.create_index(batch_op.f('ix_interactions_user_id'), ['user_id'], unique=False)
+
     op.create_table('preferences',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
@@ -110,13 +115,14 @@ def upgrade():
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('book_id', sa.Integer(), nullable=False),
     sa.Column('rating', sa.Float(), nullable=True),
+    sa.ForeignKeyConstraint(['book_id'], ['books.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('saved_books',
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('book_id', sa.Integer(), nullable=False),
-    sa.ForeignKeyConstraint(['book_id'], ['content.id'], ),
+    sa.ForeignKeyConstraint(['book_id'], ['books.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('user_id', 'book_id')
     )
@@ -139,13 +145,18 @@ def downgrade():
     op.drop_table('saved_books')
     op.drop_table('reading_history')
     op.drop_table('preferences')
+    with op.batch_alter_table('interactions', schema=None) as batch_op:
+        batch_op.drop_index(batch_op.f('ix_interactions_user_id'))
+        batch_op.drop_index(batch_op.f('ix_interactions_interaction_type'))
+        batch_op.drop_index(batch_op.f('ix_interactions_book_id'))
+
     op.drop_table('interactions')
-    op.drop_table('content_genre_association')
-    op.drop_table('content_category_association')
-    op.drop_table('content_author_association')
+    op.drop_table('book_genre_association')
+    op.drop_table('book_category_association')
+    op.drop_table('book_author_association')
     op.drop_table('users')
     op.drop_table('genre')
-    op.drop_table('content')
     op.drop_table('category')
+    op.drop_table('books')
     op.drop_table('author')
     # ### end Alembic commands ###

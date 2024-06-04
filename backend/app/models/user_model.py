@@ -28,4 +28,4 @@ class User(db.Model):
     interactions = db.relationship('Interaction', back_populates='user')
     preferences = db.relationship('Preference', back_populates='user')
     sessions = db.relationship('Session', back_populates='user')
-    saved_books = db.relationship('Content', secondary=saved_books, back_populates='saved_by_users')
+    saved_books = db.relationship('Book', secondary=saved_books, back_populates='saved_by_users')
