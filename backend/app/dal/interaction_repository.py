@@ -13,5 +13,8 @@ def add_interaction(user_id, book_id, interaction_type, timestamp, duration=None
     db.session.add(interaction)
     db.session.commit()
 
+def get_all_interactions():
+    return Interaction.query.all()
+
 def get_user_interactions(user_id):
     return Interaction.query.filter_by(user_id=user_id).all()
