@@ -29,3 +29,4 @@ class User(db.Model):
     preferences = db.relationship('Preference', back_populates='user')
     sessions = db.relationship('Session', back_populates='user')
     saved_books = db.relationship('Book', secondary=saved_books, back_populates='saved_by_users')
+    preferences_embedding = db.relationship('UserPreferencesEmbedding', back_populates='user', uselist=False)

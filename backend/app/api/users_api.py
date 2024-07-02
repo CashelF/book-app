@@ -3,6 +3,8 @@ from flask import Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.user_service import get_user_by_id
 
+from app.services.user_service import generate_user_preference_embedding
+
 users_bp = Blueprint('users_bp', __name__)
 
 @users_bp.route('/profile', methods=['GET'])

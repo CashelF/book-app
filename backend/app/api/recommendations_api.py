@@ -10,10 +10,8 @@ recommendations_bp = Blueprint('recommendations_bp', __name__)
 @jwt_required()
 def recommendations():
     user_id = get_jwt_identity()
-    user = get_user_by_id(user_id)
-    batch_size = int(request.args.get('batch_size', 10))
     num_recommendations = int(request.args.get('num_recommendations', 10))
 
-    recommended_books = get_recommendations(user, batch_size=batch_size, num_recommendations=num_recommendations)
+    recommended_books = get_recommendations(user_id, num_recommendations=num_recommendations)
 
     return jsonify([book.to_dict() for book in recommended_books])

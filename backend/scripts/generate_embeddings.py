@@ -19,7 +19,7 @@ def generate_embedding(text, model="text-embedding-3-small"):
 def store_embedding(book_id, embedding):
     embedding_array = np.array(embedding, dtype=np.float32)
     binary_embedding = embedding_array.tobytes()
-    book = book.query.get(book_id)
+    book = Book.query.get(book_id)
     book.embedding = binary_embedding
     db.session.commit()
     

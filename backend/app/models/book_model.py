@@ -24,3 +24,4 @@ class Book(db.Model):
     interactions = db.relationship("Interaction", back_populates="book")
     saved_by_users = db.relationship('User', secondary=saved_books, back_populates='saved_books')
     parameters = db.relationship('BookParameters', back_populates='book', uselist=False)
+    reading_history = db.relationship('ReadingHistory', back_populates='book')

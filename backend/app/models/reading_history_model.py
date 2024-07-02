@@ -9,4 +9,5 @@ class ReadingHistory(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
     rating = db.Column(db.Float, nullable=True)
     
+    book = db.relationship('Book', back_populates='reading_history')
     user = db.relationship('User', back_populates='reading_history')
