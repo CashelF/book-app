@@ -14,4 +14,4 @@ def recommendations():
 
     recommended_books = get_recommendations(user_id, num_recommendations=num_recommendations)
 
-    return jsonify([book.to_dict() for book in recommended_books])
+    return recommended_books

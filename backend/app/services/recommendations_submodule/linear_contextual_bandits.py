@@ -3,7 +3,7 @@ from backend.app.dal.recommendations_repository import RecommendationsRepository
 
 class LinearContextualBanditService:
     def __init__(self):
-        self.alpha = 0.1  # Learning rate
+        self.alpha = 0.1
 
     def recommend_books(self, user_id):
         user_context = RecommendationsRepository.get_user_context(user_id)
