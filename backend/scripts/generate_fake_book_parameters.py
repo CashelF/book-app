@@ -12,9 +12,6 @@ from app.models.book_model import Book
 from app.dal.user_repository import UserRepository
 from app.dal.recommendations_repository import RecommendationsRepository
 
-user_repository = UserRepository()
-recommendations_repository = RecommendationsRepository()
-
 def generate_random_parameters(size):
     return np.random.rand(size).astype(np.float32)
 
@@ -44,9 +41,9 @@ if __name__ == "__main__":
         ).all()
 
         # Use an example user to determine the size of the user context vector
-        example_user = user_repository.get_user_by_id(1)
+        example_user = UserRepository.get_user_by_id(1)
         if example_user:
-            user_vector_size = len(recommendations_repository.get_user_context(example_user.id))
+            user_vector_size = len(RecommendationsRepository.get_user_context(example_user.id))
 
             for book in books:
                 embedding = generate_random_parameters(user_vector_size)

@@ -1,7 +1,7 @@
 # app/api/books_api.py
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
-from app.services.book_service import get_all_books, get_books, search_books
+from app.services.book_service import BookService
 
 books_bp = Blueprint('books_bp', __name__)
 
@@ -11,7 +11,7 @@ def fetch_all_book():
     try:
         page = request.args.get('page', 1, type=int)
         per_page = request.args.get('per_page', 10, type=int)
-        book_items, total, pages, current_page = get_all_books(page, per_page)
+        book_items, total, pages, current_page = BookService.get_all_books(page, per_page)
         book = [
             {
                 "id": item.id,
@@ -32,7 +32,7 @@ def fetch_all_book():
 @books_bp.route('/<int:id>', methods=['GET'])
 def fetch_book(id):
     try:
-        book = get_books(id)
+        book = BookService.get_books(id)
         if not book:
             return jsonify({'message': 'book not found'}), 404
         authors = [
@@ -54,7 +54,7 @@ def fetch_book(id):
 def search_book_endpoint():
     try:
         query = request.args.get('q', '', type=str)
-        book_items = search_books(query)
+        book_items = BookService.search_books(query)
         book = [
             {
                 "id": item.id,

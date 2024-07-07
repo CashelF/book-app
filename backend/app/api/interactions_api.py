@@ -1,7 +1,7 @@
 # app/api/interactions_api.py
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.services.interaction_service import record_interaction
+from app.services.interaction_service import InteractionService
 
 interactions_bp = Blueprint('interactions_bp', __name__)
 
@@ -21,5 +21,5 @@ def record():
     if interaction_type not in ['like', 'save', 'view']:
         return jsonify({"error": "Invalid interaction type"}), 400
 
-    record_interaction(user_id, book_id, interaction_type, duration)
+    InteractionService.record_interaction(user_id, book_id, interaction_type, duration)
     return jsonify({"message": "Interaction recorded"}), 200

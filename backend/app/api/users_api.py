@@ -1,9 +1,7 @@
 # app/api/users_api.py
 from flask import Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from app.services.user_service import get_user_by_id
-
-from app.services.user_service import generate_user_preference_embedding
+from app.services.user_service import UserService
 
 users_bp = Blueprint('users_bp', __name__)
 
@@ -11,7 +9,7 @@ users_bp = Blueprint('users_bp', __name__)
 @jwt_required()
 def profile():
     user_id = get_jwt_identity()
-    user = get_user_by_id(user_id)
+    user = UserService.get_user_by_id(user_id)
     return {
         'username': user.username,
         'email': user.email
