@@ -1,44 +1,33 @@
-# services/user_preferences_service.py
-
-import torch
-import torch.nn as nn
-import torch.optim as optim
-
-class AutoEncoder(nn.Module):
-    def __init__(self, input_dim, hidden_dim):
-        super(AutoEncoder, self).__init__()
-        self.encoder = nn.Sequential(
-            nn.Linear(input_dim, hidden_dim),
-            nn.ReLU()
-        )
-        self.decoder = nn.Sequential(
-            nn.Linear(hidden_dim, input_dim),
-            nn.ReLU()
-        )
-
-    def forward(self, x):
-        encoded = self.encoder(x)
-        decoded = self.decoder(encoded)
-        return decoded, encoded
+# app/services/user_preferences_service.py
+import numpy as np
+from app.dal.user_repository import UserRepository
+from app.dal.book_repository import BookRepository
 
 class UserPreferencesService:
-    def __init__(self, input_dim, hidden_dim):
-        self.model = AutoEncoder(input_dim, hidden_dim)
-        self.criterion = nn.MSELoss()
-        self.optimizer = optim.Adam(self.model.parameters(), lr=0.001)
 
-    def train_autoencoder(self, data_loader, num_epochs=50):
-        for epoch in range(num_epochs):
-            for data in data_loader:
-                inputs = data
-                self.optimizer.zero_grad()
-                outputs, _ = self.model(inputs)
-                loss = self.criterion(outputs, inputs)
-                loss.backward()
-                self.optimizer.step()
-            print(f'Epoch {epoch+1}/{num_epochs}, Loss: {loss.item()}')
+    @staticmethod
+    def generate_embedding(user_id):
+        user = UserRepository.get_user_by_id(user_id)
+        if not user:
+            raise ValueError("User not found")
 
-    def get_user_embedding(self, user_interactions):
-        with torch.no_grad():
-            _, encoded = self.model(user_interactions)
-        return encoded
+        saved_books = user.saved_books
+
+        reading_history = UserRepository.get_user_reading_history(user_id)
+        reading_history_books = [record.book for record in reading_history]
+
+        all_books = saved_books + reading_history_books
+
+        embeddings = [np.frombuffer(book.embedding, dtype=np.float32) for book in all_books if book.embedding is not None]
+
+        if not embeddings:
+            embedding_size = BookRepository.get_book_by_id(1).embedding.size
+            random_embedding = np.random.rand(embedding_size).astype(np.float32)
+            UserRepository.save_user_preferences_embedding(user_id, random_embedding)
+            return random_embedding
+
+        average_embedding = np.mean(embeddings, axis=0)
+
+        UserRepository.save_user_preferences_embedding(user_id, average_embedding)
+
+        return average_embedding

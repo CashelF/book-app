@@ -1,54 +1,42 @@
 # app/services/recommendation_service.py
-from datetime import datetime, timedelta
-from flask import session
-from app.dal.content_repository import get_content_batch
-from app.services.interaction_service import get_user_interactions
-from .bandits.thompson_sampling import bandit
-from app.utils.context_utils import get_user_context
+from datetime import timedelta
 import numpy as np
+from app.dal.recommendations_repository import RecommendationsRepository
+from app.dal.user_repository import UserRepository
+from app.models.interaction_model import InteractionType
+
+user_repository = UserRepository()
+recommendations_repository = RecommendationsRepository()
 
 # Frequency capping duration (e.g., do not show the same book within 7 days)
 FREQUENCY_CAPPING_DURATION = timedelta(days=7)
 
-def get_recommendations(user, batch_size=10, num_recommendations=10):
-    context = get_user_context(user)
-    user_id = user.id
-    session_key = f"user_{user_id}_recommendations"
+def get_recommendations(user_id, num_recommendations=1):
+    books_parameters = recommendations_repository.get_all_parameters()
 
-    if session_key not in session:
-        session[session_key] = []
-
-    interactions = get_user_interactions(user_id)
-    viewed_books = {interaction.content_id for interaction in interactions if interaction.timestamp > datetime.now() - FREQUENCY_CAPPING_DURATION}
-
-    offset = 0
+    user_vector = recommendations_repository.get_user_context(user_id)
     recommendations = []
 
-    while len(recommendations) < num_recommendations:
-        content_batch = get_content_batch(batch_size=batch_size, offset=offset)
-        if not content_batch:
+    for book_parameters in books_parameters:
+        if len(recommendations) >= num_recommendations:
             break
-        
-        batch_recommendations = []
+        book_vector = np.array(book_parameters['parameters'])
+        score = np.dot(user_vector, book_vector)
+        recommendations.append((score, book_parameters['id']))
 
-        for content in content_batch:
-            if content.id in viewed_books:
-                continue  # Skip content that has been viewed recently
-            
-            if content.embedding is not None:
-                embedding = np.frombuffer(content.embedding, dtype=np.float32)
-                features = np.concatenate((context, embedding))
-                print("SHAPES::::", embedding.shape, features.shape)
-                action_value = bandit.get_action(features)
-                batch_recommendations.append((action_value, content))
+    return [book_id for _, book_id in recommendations]
 
-        recommendations.extend(batch_recommendations)
-        offset += batch_size
+def calculate_reward(interaction_type, duration=None):
+    if interaction_type == InteractionType.LIKE:
+        return 0.5
+    elif interaction_type == InteractionType.SAVE:
+        return 1.0
+    elif interaction_type == InteractionType.VIEW:
+        if duration is None:
+            raise ValueError("Duration must be provided for viewed interactions")
 
-    recommendations.sort(reverse=True, key=lambda x: x[0])
-
-    # Store the recommendations in the session and update the viewed books
-    recommended_books = [rec[1] for rec in recommendations[:num_recommendations]]
-    session[session_key] = [rec[1].id for rec in recommendations[:num_recommendations]]
-
-    return recommended_books
+        max_duration = 300  # Cap at 5 minutes
+        normalized_duration = min(duration, max_duration) / max_duration
+        return normalized_duration
+    else:
+        raise ValueError("Unknown interaction type")

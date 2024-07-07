@@ -1,11 +1,13 @@
-# app/api/user_api.py
+# app/api/users_api.py
 from flask import Blueprint
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.user_service import get_user_by_id
 
-user_bp = Blueprint('user_bp', __name__)
+from app.services.user_service import generate_user_preference_embedding
 
-@user_bp.route('/profile', methods=['GET'])
+users_bp = Blueprint('users_bp', __name__)
+
+@users_bp.route('/profile', methods=['GET'])
 @jwt_required()
 def profile():
     user_id = get_jwt_identity()
