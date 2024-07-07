@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View } from 'react-native';
-import HomeScreen from './screens/HomeScreen';
-import BookGrid from './components/BookListExV2';
+import HomeScreen from './src/screens/HomeScreen'
+import SwipingScreen from './src/screens/SwipingScreen';
 export default function App() {
   return (
-    <HomeScreen />
+    <SwipingScreen />
   );
 }
 

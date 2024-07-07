@@ -1,36 +1,77 @@
 
-import React from 'react';
-import { FlatList, View, Text, StyleSheet, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView} from 'react-native';
+import Modal from 'react-native-modal';
+import axios from 'axios';
 
-const books = [
-  { id: '1', title: 'Catcher in the Rye', author: 'J.D. Salinger'},
-  { id: '2', title: 'Great Expectations', author: 'Charles Dickens'},
-  { id: '3', title: 'My Sister’s Keeper', author: 'Jodi Picoult'},
-  { id: '4', title: 'Someone Like You', author: 'Roald Dahl' },
-  { id: '5', title: 'My Sister’s Keeper', author: 'Jodi Picoult'},
-  { id: '6', title: 'Someone Like You', author: 'Roald Dahl' },
-  { id: '7', title: 'My Sister’s Keeper', author: 'Jodi Picoult'},
-  { id: '8', title: 'Someone Like You', author: 'Roald Dahl' },
-];
+const BookDes = ({ isPageVisible, children }) => {
+  return (
+    <Modal isVisible={isPageVisible} /*animationType="fade"*/ >
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <View style={{ backgroundColor: 'white', padding: 20, borderRadius: 10 }}>
+          {children}
+        </View>
+      </View>
+    </Modal>
+  );
+};
 
-"<Image source={imageUrl} style={styles.bookImage} />"
-const BookItem = ({ title, author, imageUrl }) => (
-  <View style={styles.bookItem}>
-    <View style={styles.bookImage} />
-    <Text style={styles.bookTitle}>{title}</Text>
-    <Text style={styles.bookAuthor}>{author}</Text>
-  </View>
-);
+const BookItem = ({ title, author, imageUrl, description }) => {
+  const [isPageVisible, setIsPageVisible] = React.useState(false);
 
-const BookGrid = () => {
+  const pageToggle = () => setIsPageVisible(() => !isPageVisible);
+
+  return (
+    <View style={styles.bookItem}>
+      <BookDes isPageVisible={isPageVisible}>
+        <View style={styles.bookItem}>
+          <TouchableOpacity onPress={pageToggle} style={{ marginTop: 10 }}>
+            <Text style={styles.bookTitle}>{title}</Text>
+            <Text style={styles.bookAuthor}>      by {author}</Text>
+          </TouchableOpacity>
+          <ScrollView>
+          <Text style={styles.bookAuthor}>{description}</Text>
+          </ScrollView>
+        </View>
+      </BookDes>
+      <TouchableOpacity onPress={pageToggle}>
+        <Image source={{uri:imageUrl}} style={styles.bookImage} />
+      </TouchableOpacity>
+      <Text style={styles.bookTitle}>{title}</Text>
+      <Text style={styles.bookAuthor}>{author}</Text>
+    </View>
+  );
+};
+
+const BookGrid = ({ bookIds }) => {
+  const [books, setBooks] = useState([]);
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      var bookList = [];
+      const bookIdsParam = bookIds.join('|');
+      for(var i = 0; i < bookIds.length; i++){
+        const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${bookIds[i]}`);
+        bookList.push(response.data);
+      }
+      setBooks(bookList);
+    };
+
+    if (bookIds.length > 0) {
+      fetchBooks();
+    }
+  }, [bookIds]);
+  
+
   return (
     <FlatList
       data={books}
       renderItem={({ item }) => (
         <BookItem
-          title={item.title}
-          author={item.author}
-          imageUrl={item.imageUrl}
+          title={item.volumeInfo.title}
+          author={item.volumeInfo.authors[0]}
+          imageUrl={item.volumeInfo.imageLinks.thumbnail}
+          description={item.volumeInfo.description}
         />
       )}
       keyExtractor={(item) => item.id}
