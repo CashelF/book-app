@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
 
 const { width } = Dimensions.get('window');
@@ -22,6 +23,7 @@ export default function SignUpScreen({ navigation }) {
       const result = await response.json();
       if (response.status === 201) {
         Alert.alert('Registration Successful', 'Welcome!');
+        await AsyncStorage.setItem('access_token', result.access_token);
         navigation.navigate('Home');
       } else {
         Alert.alert('Registration Failed', result.message || 'An error occurred');
