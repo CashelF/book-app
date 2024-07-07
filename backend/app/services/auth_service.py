@@ -11,7 +11,8 @@ def register_user(data):
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
     new_user = User(username=data['username'], email=data['email'], password_hash=hashed_password)
     user_repository.add_user(new_user)
-    return {'message': 'User created successfully'}, 201
+    access_token = create_access_token(identity=new_user.id)
+    return {'access_token': access_token}, 201
 
 def login_user(data):
     user = user_repository.get_user_by_email(data['email'])
