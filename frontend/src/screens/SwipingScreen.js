@@ -156,8 +156,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   image: {
-    width: '60%',
-    height: 300,
+    width: 128,
+    height: 200,
     resizeMode: 'cover',
     backgroundColor: '#D45555',
     borderRadius: 20,
