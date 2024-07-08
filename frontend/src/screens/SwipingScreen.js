@@ -109,6 +109,9 @@ const SwipingScreen = () => {
       onSwipeRight={onSwipeRight}
       style={styles.container}
     >
+      <View style={styles.menuContainer}>
+        <Ionicons name="arrow-back-outline" size={32} color="black" style={styles.menuIcon} />
+      </View>
       <View style={styles.card}>
         {currentBook.cover_image ? (
           <Image source={{ uri: currentBook.cover_image }} style={styles.image} />
@@ -118,6 +121,7 @@ const SwipingScreen = () => {
           </View>
         )}
         <Text style={styles.title}>{currentBook.title}</Text>
+        <Text style={styles.subHeaderText}>Description</Text>
         <Text style={styles.description}>{currentBook.description}</Text>
       </View>
       <View style={styles.buttonContainer}>
@@ -139,28 +143,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
-  card: {
-    width: width * 0.8,
-    padding: 20,
-    borderRadius: 10,
-    backgroundColor: '#f9f9f9',
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
+  menuContainer: {
+    flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  card: {
+    padding: 20,
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   image: {
-    width: 150,
-    height: 200,
-    resizeMode: 'contain',
+    width: '60%',
+    height: 300,
+    resizeMode: 'cover',
+    backgroundColor: '#D45555',
+    borderRadius: 20,
     marginBottom: 20,
   },
   noImage: {
-    width: 150,
-    height: 200,
+    width: '60%',
+    height: 300,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ddd',
+    borderRadius: 20,
     marginBottom: 20,
   },
   title: {
@@ -169,7 +178,14 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 10,
   },
+  subHeaderText: {
+    marginTop: 10,
+    color: '#19191B',
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
   description: {
+    color: '#9D9D9D',
     fontSize: 14,
     textAlign: 'center',
   },
