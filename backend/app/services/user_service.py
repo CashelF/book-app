@@ -43,4 +43,9 @@ class UserService:
     @staticmethod
     def get_user_by_id(user_id):
         return UserRepository.get_user_by_id(user_id)
+    
+    @staticmethod
+    def get_user_saved_books(user_id):
+        user = UserRepository.get_user_by_id(user_id)
+        return [book.to_dict() for book in user.saved_books]
         

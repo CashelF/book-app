@@ -9,3 +9,10 @@ class Genre(db.Model):
     name = db.Column(db.String(100), nullable=False)
 
     books = db.relationship('Book', secondary=book_genre_association, back_populates='genres')
+    
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }

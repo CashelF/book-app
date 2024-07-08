@@ -9,3 +9,9 @@ class Category(db.Model):
     name = db.Column(db.String(100), nullable=False)
 
     books = db.relationship('Book', secondary=book_category_association, back_populates='categories')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }

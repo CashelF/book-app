@@ -1,5 +1,5 @@
 # app/api/users_api.py
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.user_service import UserService
 
@@ -13,4 +13,13 @@ def profile():
     return {
         'username': user.username,
         'email': user.email
+    }, 200
+    
+@users_bp.route('/savedBooks', methods=['GET'])
+@jwt_required()
+def saved_books():
+    user_id = get_jwt_identity()
+    saved_books = UserService.get_user_saved_books(user_id)
+    return {
+        'savedBooks': saved_books
     }, 200

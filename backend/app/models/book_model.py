@@ -11,7 +11,6 @@ class Book(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     ISBN = db.Column(db.String(13))
     title = db.Column(db.String(255), nullable=False)
-    type = db.Column(db.Enum('book', 'article'))
     publication_year = db.Column(db.Integer)
     description = db.Column(db.Text)
     page_length = db.Column(db.Integer)
@@ -25,3 +24,17 @@ class Book(db.Model):
     saved_by_users = db.relationship('User', secondary=saved_books, back_populates='saved_books')
     parameters = db.relationship('BookParameters', back_populates='book', uselist=False)
     reading_history = db.relationship('ReadingHistory', back_populates='book')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'ISBN': self.ISBN,
+            'title': self.title,
+            'publication_year': self.publication_year,
+            'description': self.description,
+            'page_length': self.page_length,
+            'cover_image_url': self.cover_image_url,
+            'authors': [author.to_dict() for author in self.authors],
+            'genres': [genre.to_dict() for genre in self.genres],
+            'categories': [category.to_dict() for category in self.categories]
+        }
