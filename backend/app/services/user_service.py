@@ -2,6 +2,7 @@
 import numpy as np
 from transformers import BertModel, BertTokenizer
 from app.dal.user_repository import UserRepository
+from app.dal.reading_history_repository import ReadingHistoryRepository
 
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
 model = BertModel.from_pretrained('bert-base-uncased')
@@ -48,4 +49,12 @@ class UserService:
     def get_user_saved_books(user_id):
         user = UserRepository.get_user_by_id(user_id)
         return [book.to_dict() for book in user.saved_books]
+    
+    @staticmethod
+    def update_user_info(user_id, age, gender):
+        UserRepository.update_user_info(user_id, age, gender)
+        
+    @staticmethod
+    def add_reading_history(user_id, book_id):
+        ReadingHistoryRepository.add_reading_history(user_id, book_id)
         

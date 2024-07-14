@@ -24,7 +24,7 @@ export default function SignUpScreen({ navigation }) {
       if (response.status === 201) {
         Alert.alert('Registration Successful', 'Welcome!');
         await AsyncStorage.setItem('access_token', result.access_token);
-        navigation.navigate('Home');
+        navigation.navigate('UserInfo');
       } else {
         Alert.alert('Registration Failed', result.message || 'An error occurred');
       }

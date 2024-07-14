@@ -53,3 +53,14 @@ class UserRepository:
             db.session.commit()
         else:
             print("Book already saved")
+            
+    @staticmethod
+    def update_user_info(user_id, age, gender):
+        user = User.query.get(user_id)
+        if not user:
+            raise ValueError(f"User with id {user_id} not found")
+        if age is not None:
+            user.age = int(age)
+        if gender is not None:
+            user.gender = gender
+        db.session.commit()
