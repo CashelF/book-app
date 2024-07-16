@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import { API_URL } from '@env';
 
-const ReadingHistoryScreen = ({navigation}) => {
+const ReadingHistoryScreen = ({ navigation }) => {
   const [query, setQuery] = useState('');
   const [books, setBooks] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
@@ -33,7 +33,7 @@ const ReadingHistoryScreen = ({navigation}) => {
 
   const selectBook = (book) => {
     if (selectedBooks.includes(book)) {
-      setSelectedBooks(selectedBooks.filter(b => b !== book));
+      setSelectedBooks(selectedBooks.filter((b) => b !== book));
     } else {
       setSelectedBooks([...selectedBooks, book]);
     }
@@ -87,6 +87,8 @@ const ReadingHistoryScreen = ({navigation}) => {
           </TouchableOpacity>
         )}
         numColumns={2}
+        showsVerticalScrollIndicator={false}
+        style={styles.fixedHeightList}
       />
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
@@ -100,9 +102,11 @@ const screenWidth = Dimensions.get('window').width;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#F5F5F5',
     alignItems: 'center',
+    paddingTop: 20,
+    paddingLeft: 20,
+    paddingRight: 20,
   },
   title: {
     fontSize: 24,
@@ -119,12 +123,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   bookList: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    paddingBottom: 80,
   },
   bookItem: {
-    width: '45%',
-    margin: '2.5%',
+    flex: 1,
+    marginHorizontal: 35,
+    marginVertical: 10,
     position: 'relative',
     alignItems: 'center',
     justifyContent: 'center',
@@ -144,6 +148,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
+    width: 128,
   },
   bookAuthor: {
     fontSize: 14,
@@ -151,17 +156,21 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   button: {
-    marginTop: 20,
     padding: 15,
     backgroundColor: '#FF6B6B',
     borderRadius: 5,
     width: screenWidth > 600 ? '50%' : '90%',
     alignItems: 'center',
     alignSelf: 'center',
+    position: 'absolute',
+    bottom: 20,
   },
   buttonText: {
     color: 'white',
     fontSize: 18,
+  },
+  fixedHeightList: {
+    height: 400, // Set the desired fixed height here
   },
 });
 
