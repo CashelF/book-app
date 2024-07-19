@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Alert, Image, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -9,6 +9,27 @@ const ReadingHistoryScreen = ({ navigation }) => {
   const [query, setQuery] = useState('');
   const [books, setBooks] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
+
+  useEffect(() => {
+    if (query.length === 0) {
+      fetchContentBasedRecommendations();
+    }
+  }, [query]);
+
+  const fetchContentBasedRecommendations = async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      const response = await axios.get(`${API_URL}/api/recommendations/content-based`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      setBooks(response.data);
+    } catch (error) {
+      console.error('Error fetching content-based recommendations:', error);
+    }
+  };
 
   const searchBooks = async (text) => {
     setQuery(text);
@@ -27,15 +48,42 @@ const ReadingHistoryScreen = ({ navigation }) => {
         console.error('Error searching books:', error);
       }
     } else {
-      setBooks([]);
+      fetchContentBasedRecommendations();
     }
   };
 
-  const selectBook = (book) => {
-    if (selectedBooks.includes(book)) {
-      setSelectedBooks(selectedBooks.filter((b) => b !== book));
-    } else {
-      setSelectedBooks([...selectedBooks, book]);
+  const selectBook = async (book) => {
+    const updatedSelectedBooks = selectedBooks.includes(book)
+      ? selectedBooks.filter((b) => b !== book)
+      : [...selectedBooks, book];
+
+    setSelectedBooks(updatedSelectedBooks);
+
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      await axios.post(
+        `${API_URL}/api/users/readingHistory`,
+        { books: updatedSelectedBooks },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      await axios.post(
+        `${API_URL}/api/users/preference-embedding`,
+        { books: updatedSelectedBooks },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+    } catch (error) {
+      console.error('Error updating reading history and preference embedding:', error);
+      Alert.alert('Error updating reading history. Please try again.');
     }
   };
 

@@ -25,6 +25,6 @@ class ContentFilteringRecService:
 
         similarities.sort(key=lambda x: x[1], reverse=True)
         
-        recommendations = [book_id for book_id, _ in similarities]
+        recommendations = BookRepository.get_books_by_ids([book_id for book_id, _ in similarities])
 
         return recommendations

@@ -23,6 +23,10 @@ class BookRepository:
     def get_book_by_id(book_id):
         book = Book.query.get(book_id)
         return book
+    
+    @staticmethod
+    def get_books_by_ids(book_ids):
+        return Book.query.filter(Book.id.in_(book_ids)).all()
 
     @staticmethod
     def search_books_by_query(query):
@@ -54,7 +58,7 @@ class BookRepository:
     def get_all_book_embeddings():
         books = Book.query.filter(Book.embedding.isnot(None)).all()
         book_embeddings = [
-            {'id': book.id, 'title': book.title, 'embedding': np.frombuffer(book.embedding, dtype=np.float32)}
+            {'id': book.id, 'embedding': np.frombuffer(book.embedding, dtype=np.float32)}
             for book in books
         ]
         return book_embeddings

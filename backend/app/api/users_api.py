@@ -2,6 +2,7 @@
 from flask import Blueprint, jsonify, request
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.services.user_service import UserService
+from app.services.user_preference_service import UserPreferencesService
 
 users_bp = Blueprint('users_bp', __name__)
 
@@ -48,3 +49,11 @@ def add_reading_history():
         UserService.add_reading_history(user_id, book_id)
     
     return jsonify({"msg": "Reading history added successfully"}), 201
+
+@users_bp.route('/preference-embedding', methods=['POST'])
+@jwt_required()
+def update_preference_embedding():
+    user_id = get_jwt_identity()
+    UserPreferencesService.generate_embedding(user_id)
+    
+    return jsonify({"msg": "User preferences updated successfully"}), 200

@@ -24,4 +24,4 @@ def recommend_content_based():
         return jsonify({"error": "user_id is required"}), 400
     
     recommendations = ContentFilteringRecService.get_content_based_recommendations(user_id)
-    return jsonify(recommendations)
+    return jsonify([book.to_dict() for book in recommendations])
