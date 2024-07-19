@@ -81,7 +81,6 @@ def populate_database(entries):
         book = Book(
             title=entry['title'],
             ISBN=entry['isbn_13'],
-            type='book',
             publication_year=int(entry['publishedDate'].split('-')[0]) if entry.get('publishedDate') else None,
             description=entry['description'],
             page_length=entry['pageCount'],

@@ -9,6 +9,9 @@ import numpy as np
 from app import create_app
 from app.dal.database import db
 from app.models.book_model import Book
+from dotenv import load_dotenv
+
+load_dotenv()
 
 client = OpenAI()
 
