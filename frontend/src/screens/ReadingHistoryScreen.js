@@ -52,13 +52,7 @@ const ReadingHistoryScreen = ({ navigation }) => {
     }
   };
 
-  const selectBook = async (book) => {
-    const updatedSelectedBooks = selectedBooks.includes(book.id)
-      ? selectedBooks.filter((id) => id !== book.id)
-      : [...selectedBooks, book.id];
-
-    setSelectedBooks(updatedSelectedBooks);
-
+  const updateReadingHistoryAndEmbedding = async (updatedSelectedBooks) => {
     try {
       const token = await AsyncStorage.getItem('access_token');
       await axios.post(
@@ -73,7 +67,7 @@ const ReadingHistoryScreen = ({ navigation }) => {
       );
       await axios.post(
         `${API_URL}/api/users/preference-embedding`,
-        { books: updatedSelectedBooks },
+        { book_ids: updatedSelectedBooks },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -87,26 +81,77 @@ const ReadingHistoryScreen = ({ navigation }) => {
     }
   };
 
-  const handleSubmit = async () => {
-    try {
-      const token = await AsyncStorage.getItem('access_token');
-      const response = await axios.post(
-        `${API_URL}/api/users/readingHistory`,
-        { books: selectedBooks },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      if (response.status === 201) {
-        navigation.navigate('Home');
+  const selectBook = async (book) => {
+    const token = await AsyncStorage.getItem('access_token');
+    let updatedSelectedBooks;
+
+    if (selectedBooks.includes(book.id)) {
+      // Remove book from reading history
+      updatedSelectedBooks = selectedBooks.filter((id) => id !== book.id);
+      setSelectedBooks(updatedSelectedBooks);
+
+      try {
+        await axios.delete(
+          `${API_URL}/api/users/readingHistory`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            data: {
+              book_id: book.id,
+            },
+          }
+        );
+        await axios.post(
+          `${API_URL}/api/users/preference-embedding`,
+          { book_ids: updatedSelectedBooks },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+      } catch (error) {
+        console.error('Error removing reading history and updating preference embedding:', error);
+        Alert.alert('Error updating reading history. Please try again.');
       }
-    } catch (error) {
-      console.error('Error submitting books:', error);
-      Alert.alert('Error submitting books. Please try again.');
+    } else {
+      // Add book to reading history
+      updatedSelectedBooks = [...selectedBooks, book.id];
+      setSelectedBooks(updatedSelectedBooks);
+
+      try {
+        await axios.post(
+          `${API_URL}/api/users/readingHistory`,
+          { book_ids: [book.id] },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+        await axios.post(
+          `${API_URL}/api/users/preference-embedding`,
+          { book_ids: updatedSelectedBooks },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+      } catch (error) {
+        console.error('Error adding reading history and updating preference embedding:', error);
+        Alert.alert('Error updating reading history. Please try again.');
+      }
     }
+  };
+
+  const handleSubmit = () => {
+    navigation.navigate('Home');
   };
 
   return (

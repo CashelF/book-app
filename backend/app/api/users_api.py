@@ -49,6 +49,20 @@ def add_reading_history():
     
     return jsonify({"msg": "Reading history added successfully"}), 201
 
+@users_bp.route('/readingHistory', methods=['DELETE'])
+@jwt_required()
+def delete_reading_history():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    book_id = data.get('book_id')
+
+    if book_id is None:
+        return jsonify({"msg": "book_id is required"}), 400
+
+    UserService.delete_reading_history(user_id, book_id)
+    
+    return jsonify({"msg": "Reading history entry deleted successfully"}), 200
+
 @users_bp.route('/preference-embedding', methods=['POST'])
 @jwt_required()
 def update_preference_embedding():

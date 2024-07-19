@@ -58,3 +58,7 @@ class UserService:
     def add_reading_history(user_id, book_id):
         ReadingHistoryRepository.add_reading_history(user_id, book_id)
         
+    @staticmethod
+    def delete_reading_history(user_id, book_id):
+        ReadingHistoryRepository.delete_reading_history(user_id, book_id)
+        
