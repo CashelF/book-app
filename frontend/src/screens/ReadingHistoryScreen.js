@@ -53,9 +53,9 @@ const ReadingHistoryScreen = ({ navigation }) => {
   };
 
   const selectBook = async (book) => {
-    const updatedSelectedBooks = selectedBooks.includes(book)
-      ? selectedBooks.filter((b) => b !== book)
-      : [...selectedBooks, book];
+    const updatedSelectedBooks = selectedBooks.includes(book.id)
+      ? selectedBooks.filter((id) => id !== book.id)
+      : [...selectedBooks, book.id];
 
     setSelectedBooks(updatedSelectedBooks);
 
@@ -63,7 +63,7 @@ const ReadingHistoryScreen = ({ navigation }) => {
       const token = await AsyncStorage.getItem('access_token');
       await axios.post(
         `${API_URL}/api/users/readingHistory`,
-        { books: updatedSelectedBooks },
+        { book_ids: updatedSelectedBooks },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -125,7 +125,7 @@ const ReadingHistoryScreen = ({ navigation }) => {
         renderItem={({ item }) => (
           <TouchableOpacity style={styles.bookItem} onPress={() => selectBook(item)}>
             <Image style={styles.bookImage} source={{ uri: item.cover_image_url }} />
-            {selectedBooks.includes(item) && (
+            {selectedBooks.includes(item.id) && (
               <View style={styles.checkmarkContainer}>
                 <Ionicons name="checkmark-circle" size={24} color="green" />
               </View>
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   fixedHeightList: {
-    height: 400, // Set the desired fixed height here
+    height: 400,
   },
 });
 

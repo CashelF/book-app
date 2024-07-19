@@ -42,10 +42,9 @@ def saved_books():
 def add_reading_history():
     user_id = get_jwt_identity()
     data = request.get_json()
-    books = data.get('books', [])
+    book_ids = data.get('book_ids', [])
 
-    for book in books:
-        book_id = book.get('id')
+    for book_id in book_ids:
         UserService.add_reading_history(user_id, book_id)
     
     return jsonify({"msg": "Reading history added successfully"}), 201
