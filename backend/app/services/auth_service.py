@@ -13,12 +13,12 @@ class AuthService:
         new_user = User(username=data['username'], email=data['email'], password_hash=hashed_password)
         UserRepository.add_user(new_user)
         access_token = create_access_token(identity=new_user.id)
-        return {'access_token': access_token}, 201
+        return {'access_token': access_token}
 
     @staticmethod
     def login_user(data):
         user = UserRepository.get_user_by_email(data['email'])
         if user and bcrypt.check_password_hash(user.password_hash, data['password']):
             access_token = create_access_token(identity=user.id)
-            return {'access_token': access_token}, 200
-        return {'message': 'Invalid credentials'}, 401
+            return {'access_token': access_token}
+        return {'message': 'Invalid credentials'}

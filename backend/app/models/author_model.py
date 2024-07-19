@@ -9,3 +9,9 @@ class Author(db.Model):
     name = db.Column(db.String(255), nullable=False)
 
     books = db.relationship('Book', secondary=book_author_association, back_populates='authors')
+    
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'name': self.name
+        }

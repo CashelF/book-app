@@ -1,5 +1,6 @@
 # app/dal/user_repository.py
 from app.models.user_model import User
+from app.models.book_model import Book
 from app.models.user_preferences_embedding_model import UserPreferencesEmbedding
 from app.models.reading_history_model import ReadingHistory
 from app.dal.database import db
@@ -35,4 +36,31 @@ class UserRepository:
             user_pref_embedding.embedding = embedding_binary
         
         db.session.add(user_pref_embedding)
+        db.session.commit()
+        
+    @staticmethod
+    def add_user_saved_book(user_id, book_id):
+        user = User.query.get(user_id)
+        if not user:
+            raise ValueError(f"User with id {user_id} not found")
+
+        book = Book.query.get(book_id)
+        if not book:
+            raise ValueError(f"Book with id {book_id} not found")
+
+        if book not in user.saved_books:
+            user.saved_books.append(book)
+            db.session.commit()
+        else:
+            print("Book already saved")
+            
+    @staticmethod
+    def update_user_info(user_id, age, gender):
+        user = User.query.get(user_id)
+        if not user:
+            raise ValueError(f"User with id {user_id} not found")
+        if age is not None:
+            user.age = int(age)
+        if gender is not None:
+            user.gender = gender
         db.session.commit()

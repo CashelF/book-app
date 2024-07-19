@@ -55,14 +55,7 @@ def search_book_endpoint():
     try:
         query = request.args.get('q', '', type=str)
         book_items = BookService.search_books(query)
-        book = [
-            {
-                "id": item.id,
-                "title": item.title,
-                "description": item.description,
-                "cover_image": item.cover_image_url
-            } for item in book_items
-        ]
-        return jsonify(book), 200
+        books = [item.to_dict() for item in book_items]
+        return jsonify(books), 200
     except Exception as e:
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500
