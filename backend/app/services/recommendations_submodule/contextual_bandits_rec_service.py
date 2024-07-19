@@ -7,7 +7,7 @@ from app.models.interaction_model import InteractionType
 # Frequency capping duration (e.g., do not show the same book within 7 days)
 FREQUENCY_CAPPING_DURATION = timedelta(days=7)
 
-class RecommendationService:
+class ContextualBanditsRecommendationService:
     @staticmethod
     def get_recommendations(user_id, num_recommendations=1):
         books_parameters = RecommendationsRepository.get_all_parameters()
@@ -20,9 +20,13 @@ class RecommendationService:
                 break
             book_vector = np.array(book_parameters['parameters'])
             score = np.dot(user_vector, book_vector)
-            recommendations.append((score, book_parameters['id']))
+            recommendations.append((book_parameters['id'], score))
+            
+        recommendations.sort(key=lambda x: x[1], reverse=True)
+        
+        print(user_vector)
 
-        return [book_id for _, book_id in recommendations]
+        return [book_id for book_id, _ in recommendations]
 
     @staticmethod
     def calculate_reward(interaction_type, duration=None):

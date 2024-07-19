@@ -1,4 +1,5 @@
 # app/dal/book_repository.py
+import numpy as np
 from app.models.book_model import Book
 from app.models.book_parameters_model import BookParameters
 from app.dal.database import db
@@ -48,3 +49,12 @@ class BookRepository:
         else:
             book_parameters.parameters = parameters
         db.session.commit()
+
+    @staticmethod
+    def get_all_book_embeddings():
+        books = Book.query.filter(Book.embedding.isnot(None)).all()
+        book_embeddings = [
+            {'id': book.id, 'title': book.title, 'embedding': np.frombuffer(book.embedding, dtype=np.float32)}
+            for book in books
+        ]
+        return book_embeddings

@@ -9,7 +9,7 @@ from app import create_app
 from app.dal.book_repository import BookRepository
 from app.dal.interaction_repository import InteractionRepository
 from app.dal.recommendations_repository import RecommendationsRepository
-from app.services.recommendation_service import RecommendationService
+from backend.app.services.recommendations_submodule.contextual_bandits_rec_service import ContextualBanditsRecommendationService
 import random
 
 def train_bandits_sgd():
@@ -35,7 +35,7 @@ def train_bandits_sgd():
                     continue
                 book_id = interaction.book_id
                 interaction_type = interaction.interaction_type
-                interaction_value = RecommendationService.calculate_reward(interaction_type, interaction.duration)
+                interaction_value = ContextualBanditsRecommendationService.calculate_reward(interaction_type, interaction.duration)
 
                 # Load or initialize parameters for the book
                 parameters = BookRepository.get_book_parameters(book_id)

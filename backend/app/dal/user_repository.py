@@ -1,4 +1,5 @@
 # app/dal/user_repository.py
+import numpy as np
 from app.models.user_model import User
 from app.models.book_model import Book
 from app.models.user_preferences_embedding_model import UserPreferencesEmbedding
@@ -64,3 +65,10 @@ class UserRepository:
         if gender is not None:
             user.gender = gender
         db.session.commit()
+        
+    @staticmethod
+    def get_user_preferences_embedding(user_id):
+        user_pref_embedding = UserPreferencesEmbedding.query.filter_by(user_id=user_id).first()
+        if user_pref_embedding is None:
+            return None
+        return np.frombuffer(user_pref_embedding.embedding, dtype=np.float32)
