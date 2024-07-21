@@ -38,5 +38,6 @@ backend/**/__pycache__/
 backend/venv/
 backend/.env
 backend/scripts/filtered_books.csv
+backend/indexdir/
 
 frontend/%ProgramData%
