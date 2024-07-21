@@ -16,22 +16,41 @@ const SwipingScreen = () => {
 
   useEffect(() => {
     fetchBooks();
+    postPreferenceEmbedding();
   }, []);
 
   const fetchBooks = async () => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem('access_token');
-      const response = await axios.get(`${API_URL}/api/books/`, {
+      const response = await axios.get(`${API_URL}/api/recommendations/content-based`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      setBooks(response.data.book);
+      setBooks(response.data);
       setLoading(false);
     } catch (error) {
       console.error(error);
       setLoading(false);
+    }
+  };
+
+  const postPreferenceEmbedding = async () => {
+    try {
+      const token = await AsyncStorage.getItem('access_token');
+      await axios.post(
+        `${API_URL}/api/users/preference-embedding`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        }
+      );
+      console.log('Preference embedding posted successfully.');
+    } catch (error) {
+      console.error('Error posting preference embedding:', error);
     }
   };
 
@@ -113,8 +132,8 @@ const SwipingScreen = () => {
         <Ionicons name="arrow-back-outline" size={32} color="black" style={styles.menuIcon} />
       </View>
       <View style={styles.card}>
-        {currentBook.cover_image ? (
-          <Image source={{ uri: currentBook.cover_image }} style={styles.image} />
+        {currentBook.cover_image_url ? (
+          <Image source={{ uri: currentBook.cover_image_url }} style={styles.image} />
         ) : (
           <View style={styles.noImage}>
             <Text>No Image Available</Text>

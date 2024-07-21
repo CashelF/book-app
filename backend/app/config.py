@@ -1,6 +1,7 @@
 # app/config.py
 import os
 from dotenv import load_dotenv
+import logging
 
 # Load environment variables from a .env file if present
 load_dotenv()
@@ -30,3 +31,4 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
     SQLALCHEMY_ECHO = False
+    LOGGING_LEVEL = logging.WARNING

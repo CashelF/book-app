@@ -36,7 +36,7 @@ function App() {
         />
         <Stack.Screen 
           name="Home" 
-          component={HomeScreen} 
+          component={SwipingScreen} 
           options={{ headerShown: false }} 
         />
       </Stack.Navigator>

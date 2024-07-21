@@ -1,5 +1,6 @@
 # app/dal/book_repository.py
 import numpy as np
+from sqlalchemy import func
 from app.models.book_model import Book
 from app.models.book_parameters_model import BookParameters
 from app.dal.database import db
@@ -26,7 +27,9 @@ class BookRepository:
     
     @staticmethod
     def get_books_by_ids(book_ids):
-        return Book.query.filter(Book.id.in_(book_ids)).all()
+        return Book.query.filter(Book.id.in_(book_ids)) \
+                          .order_by(func.field(Book.id, *book_ids)) \
+                          .all()
 
     @staticmethod
     def search_books_by_query(query):

@@ -1,5 +1,5 @@
 FLASK_APP=app
-FLASK_ENV=development  # Change to 'production' for production environment
+FLASK_ENV=production  # Change to 'production' for production environment
 FLASK_DEBUG=1
 SECRET_KEY=d828abb373084934b536015d410bc3faf2d71ec93860a690
 JWT_SECRET_KEY=d828abb373084934b536015d410bc3faf2d71ec93860a690
