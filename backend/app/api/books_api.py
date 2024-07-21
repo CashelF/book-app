@@ -2,6 +2,7 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from app.services.book_service import BookService
+from app.services.book_search_service import BookSearchService
 
 books_bp = Blueprint('books_bp', __name__)
 
@@ -54,8 +55,7 @@ def fetch_book(id):
 def search_book_endpoint():
     try:
         query = request.args.get('q', '', type=str)
-        book_items = BookService.search_books(query)
-        books = [item.to_dict() for item in book_items]
-        return jsonify(books), 200
+        book_items = BookSearchService.search_books(query)
+        return jsonify(book_items), 200
     except Exception as e:
         return jsonify({'message': 'An error occurred', 'error': str(e)}), 500

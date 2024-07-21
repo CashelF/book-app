@@ -30,6 +30,10 @@ class BookRepository:
         return Book.query.filter(Book.id.in_(book_ids)) \
                           .order_by(func.field(Book.id, *book_ids)) \
                           .all()
+    
+    @staticmethod
+    def get_book_by_isbn(isbn_13):
+        return Book.query.filter_by(ISBN=isbn_13).first()
 
     @staticmethod
     def search_books_by_query(query):

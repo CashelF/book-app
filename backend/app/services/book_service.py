@@ -10,8 +10,3 @@ class BookService:
     @staticmethod
     def get_books(book_id):
         return BookRepository.get_book_by_id(book_id)
-        
-    @staticmethod
-    def search_books(query):
-        return BookRepository.search_books_by_query(query)
-        

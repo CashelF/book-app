@@ -14,6 +14,7 @@ from app.models import Book, Author, Genre, Category
 # Google Books API key
 API_KEY = 'AIzaSyCXtMtLoWlOUAGC1zWnyqfebxEq65mck9U'
 MIN_REVIEWS = 100  # A threshold for the minimum number of reviews
+START_ROW = 1100  # Specify the starting row index
 
 # Function to search for data using the Google Books API
 def search_data(isbn):
@@ -118,7 +119,7 @@ if __name__ == "__main__":
         df = pd.read_csv('scripts/filtered_books.csv')
         filtered_df = df[df['ratings_count'] >= MIN_REVIEWS]
         
-        for _, row in filtered_df.iterrows():
+        for _, row in filtered_df.iloc[START_ROW:].iterrows():
             isbn = row['isbn13']
             ratings_count = row['ratings_count']
             data = search_data(isbn)
