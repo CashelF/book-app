@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
 import { API_URL } from '@env';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const ReadingHistoryScreen = ({ navigation }) => {
   const [query, setQuery] = useState('');
@@ -155,7 +156,7 @@ const ReadingHistoryScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Search and select books you've read</Text>
       <TextInput
         style={styles.input}
@@ -186,7 +187,7 @@ const ReadingHistoryScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 };
 
