@@ -69,3 +69,7 @@ class BookRepository:
             for book in books
         ]
         return book_embeddings
+    
+    @staticmethod
+    def get_books_excluding(book_ids, limit):
+        return Book.query.filter(~Book.id.in_(book_ids)).limit(limit).all()
