@@ -21,7 +21,9 @@ class UserPreferencesService:
         embeddings = [np.frombuffer(book.embedding, dtype=np.float32) for book in all_books if book.embedding is not None]
 
         if not embeddings:
-            embedding_size = BookRepository.get_book_by_id(1).embedding.size
+            embedding_bytes = BookRepository.get_book_by_id(1).embedding
+            embedding_array = np.frombuffer(embedding_bytes, dtype=np.float32)
+            embedding_size = embedding_array.size
             random_embedding = np.random.rand(embedding_size).astype(np.float32)
             UserRepository.save_user_preferences_embedding(user_id, random_embedding)
             return random_embedding
