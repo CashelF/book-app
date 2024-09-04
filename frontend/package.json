@@ -22,7 +22,7 @@
     "metro-react-native-babel-preset": "^0.77.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.74.3",
+    "react-native": "^0.75.2",
     "react-native-animated-spinkit": "^1.5.2",
     "react-native-dotenv": "^3.4.11",
     "react-native-dynamic-search-bar": "github:WrathChaos/react-native-dynamic-search-bar#expo",

@@ -220,8 +220,8 @@ const styles = StyleSheet.create({
     paddingBottom: 80,
   },
   bookItem: {
-    flex: 1,
-    marginHorizontal: 35,
+    width: (screenWidth / 2) - 30,
+    marginHorizontal: 10,
     marginVertical: 10,
     position: 'relative',
     alignItems: 'center',
@@ -235,8 +235,8 @@ const styles = StyleSheet.create({
   },
   checkmarkContainer: {
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: 5,
+    right: 30,
   },
   bookTitle: {
     fontSize: 18,
