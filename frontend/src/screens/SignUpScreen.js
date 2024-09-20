@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
+import { UserContext } from '../contexts/UserContext';
 
 const { width } = Dimensions.get('window');
 
@@ -9,6 +10,8 @@ export default function SignUpScreen({ navigation }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const { setUsername: setGlobalUsername } = useContext(UserContext);
 
   const handleSignUp = async () => {
     try {
@@ -24,6 +27,7 @@ export default function SignUpScreen({ navigation }) {
       if (response.status === 201) {
         Alert.alert('Registration Successful', 'Welcome!');
         await AsyncStorage.setItem('access_token', result.access_token);
+        setGlobalUsername(username);
         navigation.navigate('UserInfo');
       } else {
         Alert.alert('Registration Failed', result.message || 'An error occurred');

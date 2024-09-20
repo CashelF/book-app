@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, Alert, Image, Dimensions } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import { Ionicons } from '@expo/vector-icons';
-import { API_URL } from '@env';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import BookList from '../components/BookList'; // Import BookList component
+import { API_URL } from '@env';
 
 const ReadingHistoryScreen = ({ navigation }) => {
   const [query, setQuery] = useState('');
@@ -53,35 +53,6 @@ const ReadingHistoryScreen = ({ navigation }) => {
     }
   };
 
-  const updateReadingHistoryAndEmbedding = async (updatedSelectedBooks) => {
-    try {
-      const token = await AsyncStorage.getItem('access_token');
-      await axios.post(
-        `${API_URL}/api/users/readingHistory`,
-        { book_ids: updatedSelectedBooks },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      await axios.post(
-        `${API_URL}/api/users/preference-embedding`,
-        { book_ids: updatedSelectedBooks },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-    } catch (error) {
-      console.error('Error updating reading history and preference embedding:', error);
-      Alert.alert('Error updating reading history. Please try again.');
-    }
-  };
-
   const selectBook = async (book) => {
     const token = await AsyncStorage.getItem('access_token');
     let updatedSelectedBooks;
@@ -99,9 +70,7 @@ const ReadingHistoryScreen = ({ navigation }) => {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
-            data: {
-              book_id: book.id,
-            },
+            data: { book_id: book.id },
           }
         );
         await axios.post(
@@ -115,7 +84,7 @@ const ReadingHistoryScreen = ({ navigation }) => {
           }
         );
       } catch (error) {
-        console.error('Error removing reading history and updating preference embedding:', error);
+        console.error('Error removing book:', error);
         Alert.alert('Error updating reading history. Please try again.');
       }
     } else {
@@ -145,7 +114,7 @@ const ReadingHistoryScreen = ({ navigation }) => {
           }
         );
       } catch (error) {
-        console.error('Error adding reading history and updating preference embedding:', error);
+        console.error('Error adding book:', error);
         Alert.alert('Error updating reading history. Please try again.');
       }
     }
@@ -164,25 +133,11 @@ const ReadingHistoryScreen = ({ navigation }) => {
         value={query}
         onChangeText={searchBooks}
       />
-      <FlatList
-        contentContainerStyle={styles.bookList}
-        data={books}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={styles.bookItem} onPress={() => selectBook(item)}>
-            <Image style={styles.bookImage} source={{ uri: item.cover_image_url }} />
-            {selectedBooks.includes(item.id) && (
-              <View style={styles.checkmarkContainer}>
-                <Ionicons name="checkmark-circle" size={24} color="green" />
-              </View>
-            )}
-            <Text style={styles.bookTitle} numberOfLines={1}>{item.title}</Text>
-            <Text style={styles.bookAuthor} numberOfLines={1}>{item.author}</Text>
-          </TouchableOpacity>
-        )}
-        numColumns={2}
-        showsVerticalScrollIndicator={false}
-        style={styles.fixedHeightList}
+      {/* Use BookList component here */}
+      <BookList 
+        books={books} 
+        onBookPress={selectBook} 
+        selectedBooks={selectedBooks}  // Highlight selected books
       />
       <TouchableOpacity style={styles.button} onPress={handleSubmit}>
         <Text style={styles.buttonText}>Submit</Text>
@@ -216,39 +171,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     alignSelf: 'center',
   },
-  bookList: {
-    paddingBottom: 80,
-  },
-  bookItem: {
-    width: (screenWidth / 2) - 30,
-    marginHorizontal: 10,
-    marginVertical: 10,
-    position: 'relative',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  bookImage: {
-    width: 128,
-    height: 200,
-    borderRadius: 10,
-    marginBottom: 10,
-  },
-  checkmarkContainer: {
-    position: 'absolute',
-    top: 5,
-    right: 30,
-  },
-  bookTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    width: 128,
-  },
-  bookAuthor: {
-    fontSize: 14,
-    color: '#888',
-    textAlign: 'center',
-  },
   button: {
     padding: 15,
     backgroundColor: '#FF6B6B',
@@ -262,9 +184,6 @@ const styles = StyleSheet.create({
   buttonText: {
     color: 'white',
     fontSize: 18,
-  },
-  fixedHeightList: {
-    height: 400,
   },
 });
 

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { UserContext } from '../contexts/UserContext';
 import { API_URL } from '@env';
 
 const { width } = Dimensions.get('window');
 
 export default function LoginScreen({ navigation }) {
+  const { setUsername } = useContext(UserContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -22,6 +24,7 @@ export default function LoginScreen({ navigation }) {
       const result = await response.json();
       if (response.ok) {
         await AsyncStorage.setItem('access_token', result.access_token);
+        setUsername(result.username);
         navigation.navigate('Home');
       } else {
         Alert.alert('Login Failed', result.message || 'An error occurred');
