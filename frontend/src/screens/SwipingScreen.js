@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
+import { SavedBooksContext } from '../contexts/SavedBooksContext';
 import { Ionicons } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
 
@@ -13,6 +14,7 @@ const SwipingScreen = () => {
   const [books, setBooks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const { savedBooks, setSavedBooks } = React.useContext(SavedBooksContext);
 
   useEffect(() => {
     fetchBooks();
@@ -54,13 +56,13 @@ const SwipingScreen = () => {
     }
   };
 
-  const onSwipeLeft = () => {
+  const onSwipeUp = () => {
     if (currentIndex < books.length - 1) {
       setCurrentIndex(currentIndex + 1);
     }
   };
 
-  const onSwipeRight = () => {
+  const onSwipeDown = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
@@ -82,8 +84,6 @@ const SwipingScreen = () => {
           }
         }
       );
-      console.log('Liked:', currentBook.title);
-      onSwipeLeft();
     } catch (error) {
       console.error('Error recording like interaction:', error);
     }
@@ -105,8 +105,7 @@ const SwipingScreen = () => {
           }
         }
       );
-      console.log('Saved:', currentBook.title);
-      onSwipeLeft();
+      setSavedBooks([...savedBooks, currentBook]);
     } catch (error) {
       console.error('Error recording save interaction:', error);
     }
@@ -124,13 +123,10 @@ const SwipingScreen = () => {
 
   return (
     <GestureRecognizer
-      onSwipeLeft={onSwipeLeft}
-      onSwipeRight={onSwipeRight}
+      onSwipeUp={onSwipeUp}
+      onSwipeDown={onSwipeDown}
       style={styles.container}
     >
-      <View style={styles.menuContainer}>
-        <Ionicons name="arrow-back-outline" size={32} color="black" style={styles.menuIcon} />
-      </View>
       <View style={styles.card}>
         {currentBook.cover_image_url ? (
           <Image source={{ uri: currentBook.cover_image_url }} style={styles.image} />
@@ -141,7 +137,11 @@ const SwipingScreen = () => {
         )}
         <Text style={styles.title}>{currentBook.title}</Text>
         <Text style={styles.subHeaderText}>Description</Text>
-        <Text style={styles.description}>{currentBook.description}</Text>
+        <View style={styles.descriptionContainer}>
+          <ScrollView>
+            <Text style={styles.description}>{currentBook.description}</Text>
+          </ScrollView>
+        </View>
       </View>
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handleSave} style={styles.button}>
@@ -183,8 +183,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   noImage: {
-    width: '60%',
-    height: 300,
+    width: 128,
+    height: 200,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ddd',
@@ -202,6 +202,11 @@ const styles = StyleSheet.create({
     color: '#19191B',
     fontSize: 16,
     fontWeight: 'bold'
+  },
+  descriptionContainer: {
+    height: 350,
+    width: '100%',
+    marginVertical: 10,
   },
   description: {
     color: '#9D9D9D',
