@@ -5,21 +5,56 @@ from app.services.interaction_service import InteractionService
 
 interactions_bp = Blueprint('interactions_bp', __name__)
 
-@interactions_bp.route('/record', methods=['POST'])
+# Save interaction
+@interactions_bp.route('/save', methods=['POST'])
 @jwt_required()
-def record():
+def save_book():
     user_id = get_jwt_identity()
     data = request.get_json()
     book_id = data.get('book_id')
-    interaction_type = data.get('interaction_type')
-    duration = data.get('duration')  # Include duration for 'view' interactions if applicable
+    if not book_id:
+        return jsonify({"error": "Book ID is required"}), 400
     
-    if not book_id or not interaction_type:
-        return jsonify({"error": "Book ID and interaction type are required"}), 400
-    
-    # Validate interaction type
-    if interaction_type not in ['like', 'save', 'view']:
-        return jsonify({"error": "Invalid interaction type"}), 400
+    InteractionService.save_interaction(user_id, book_id)
+    return jsonify({"message": "Book saved"}), 200
 
-    InteractionService.record_interaction(user_id, book_id, interaction_type, duration)
-    return jsonify({"message": "Interaction recorded"}), 200
+# Unsave interaction
+@interactions_bp.route('/unsave', methods=['POST'])
+@jwt_required()
+def unsave_book():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    book_id = data.get('book_id')
+    if not book_id:
+        return jsonify({"error": "Book ID is required"}), 400
+    
+    InteractionService.unsave_interaction(user_id, book_id)
+    return jsonify({"message": "Book unsaved"}), 200
+
+# Like interaction
+@interactions_bp.route('/like', methods=['POST'])
+@jwt_required()
+def like_book():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    book_id = data.get('book_id')
+    if not book_id:
+        return jsonify({"error": "Book ID is required"}), 400
+    
+    InteractionService.like_interaction(user_id, book_id)
+    return jsonify({"message": "Book liked"}), 200
+
+# View interaction
+@interactions_bp.route('/view', methods=['POST'])
+@jwt_required()
+def view_book():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    book_id = data.get('book_id')
+    duration = data.get('duration')  # Optionally include duration of the view
+
+    if not book_id:
+        return jsonify({"error": "Book ID is required"}), 400
+    
+    InteractionService.view_interaction(user_id, book_id, duration)
+    return jsonify({"message": "Book viewed"}), 200

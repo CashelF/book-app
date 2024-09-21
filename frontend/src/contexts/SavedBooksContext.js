@@ -11,7 +11,7 @@ export const SavedBooksProvider = ({ children }) => {
   const fetchSavedBooks = async () => {
     try {
       const token = await AsyncStorage.getItem('access_token');
-      const response = await axios.get(`${API_URL}/api/interactions/saved`, {
+      const response = await axios.get(`${API_URL}/api/users/savedBooks`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

@@ -56,6 +56,20 @@ class UserRepository:
             print("Book already saved")
             
     @staticmethod
+    def remove_user_saved_book(user_id, book_id):
+        user = User.query.get(user_id)
+        if not user:
+            raise ValueError(f"User with id {user_id} not found")
+
+        book = Book.query.get(book_id)
+        if not book:
+            raise ValueError(f"Book with id {book_id} not found")
+
+        if book in user.saved_books:
+            user.saved_books.remove(book)
+            db.session.commit()
+            
+    @staticmethod
     def update_user_info(user_id, age, gender):
         user = User.query.get(user_id)
         if not user:

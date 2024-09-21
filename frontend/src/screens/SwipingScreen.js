@@ -73,10 +73,9 @@ const SwipingScreen = () => {
       const token = await AsyncStorage.getItem('access_token');
       const currentBook = books[currentIndex];
       await axios.post(
-        `${API_URL}/api/interactions/record`,
+        `${API_URL}/api/interactions/like`,
         {
           book_id: currentBook.id,
-          interaction_type: 'like',
         },
         {
           headers: {
@@ -93,23 +92,33 @@ const SwipingScreen = () => {
     try {
       const token = await AsyncStorage.getItem('access_token');
       const currentBook = books[currentIndex];
+  
+      const isAlreadySaved = savedBooks.some(book => book.id === currentBook.id);
+  
+      if (isAlreadySaved) {
+        await axios.post(
+          `${API_URL}/api/interactions/unsave`,
+          { book_id: currentBook.id },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+  
+        setSavedBooks(savedBooks.filter(book => book.id !== currentBook.id));
+        return;
+      }
+  
       await axios.post(
-        `${API_URL}/api/interactions/record`,
-        {
-          book_id: currentBook.id,
-          interaction_type: 'save',
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        }
+        `${API_URL}/api/interactions/save`,
+        { book_id: currentBook.id },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
+  
       setSavedBooks([...savedBooks, currentBook]);
+  
     } catch (error) {
       console.error('Error recording save interaction:', error);
     }
   };
+  
 
   if (loading) {
     return (
