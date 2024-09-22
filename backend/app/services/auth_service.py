@@ -20,5 +20,7 @@ class AuthService:
         user = UserRepository.get_user_by_email(data['email'])
         if user and bcrypt.check_password_hash(user.password_hash, data['password']):
             access_token = create_access_token(identity=user.id)
-            return {'access_token': access_token}
+            return {'access_token': access_token, 
+                    'username': user.username,
+                    'email': user.email}
         return {'message': 'Invalid credentials'}

@@ -10,22 +10,12 @@ import BookList from '../components/BookList';
 
 const SavedBooksScreen = () => {
   const { savedBooks, loading } = useContext(SavedBooksContext);
-  const { username, setUsername } = useContext(UserContext);
+  const { username, fetchUserProfile } = useContext(UserContext);
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      const token = await AsyncStorage.getItem('token');
-      if (token && !username) {
-        const response = await fetch(`${API_URL}/api/users/profile`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const data = await response.json();
-        setUsername(data.username);
-      }
-    };
-    fetchUserProfile();
+    if (!username) {
+      fetchUserProfile();
+    }
   }, [username]);
 
   if (loading) {
@@ -44,7 +34,7 @@ const SavedBooksScreen = () => {
           <View style={styles.circleIcon}></View>
         </View>
         <View style={styles.headerTextContainer}>
-          <Text style={styles.welcomeText}>Welcome back, {username}!</Text>
+          <Text style={styles.welcomeText}>{username ? `Welcome back, ${username}!` : 'Welcome back!'}</Text>
           <Text style={styles.subHeaderText}>Here are your saved and books!</Text>
         </View>
         <SearchBar
