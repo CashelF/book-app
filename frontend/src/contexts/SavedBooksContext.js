@@ -16,16 +16,11 @@ export const SavedBooksProvider = ({ children }) => {
           Authorization: `Bearer ${token}`,
         },
       });
-      setSavedBooks(response.data);
+      setSavedBooks(response.data.savedBooks || []);
     } catch (error) {
       console.error('Error fetching saved books:', error);
     }
   };
-
-  // Fetch saved books once when the app starts
-  useEffect(() => {
-    fetchSavedBooks();
-  }, []);
 
   return (
     <SavedBooksContext.Provider value={{ savedBooks, setSavedBooks, fetchSavedBooks }}>

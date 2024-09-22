@@ -11,12 +11,16 @@ class InteractionService:
 
     @staticmethod
     def unsave_interaction(user_id, book_id):
-        # TODO: Add unsave interaction
+        InteractionRepository.add_interaction(user_id, book_id, 'unsave', datetime.now())
         UserRepository.remove_user_saved_book(user_id, book_id)
 
     @staticmethod
     def like_interaction(user_id, book_id):
         InteractionRepository.add_interaction(user_id, book_id, 'like', datetime.now())
+        
+    @staticmethod
+    def unlike_interaction(user_id, book_id):
+        InteractionRepository.add_interaction(user_id, book_id, 'unlike', datetime.now())
 
     @staticmethod
     def view_interaction(user_id, book_id, duration=None):

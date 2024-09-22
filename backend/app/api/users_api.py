@@ -37,6 +37,15 @@ def saved_books():
         'savedBooks': saved_books
     }, 200
     
+@users_bp.route('/likedBooks', methods=['GET'])
+@jwt_required()
+def liked_books():
+    user_id = get_jwt_identity()
+    liked_books = UserService.get_user_liked_books(user_id)
+    return {
+        'likedBooks': liked_books
+    }, 200
+    
 @users_bp.route('/readingHistory', methods=['POST'])
 @jwt_required()
 def add_reading_history():

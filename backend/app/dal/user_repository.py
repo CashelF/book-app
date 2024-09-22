@@ -1,7 +1,9 @@
 # app/dal/user_repository.py
 import numpy as np
+from sqlalchemy import func
 from app.models.user_model import User
 from app.models.book_model import Book
+from app.models.interaction_model import Interaction, InteractionType
 from app.models.user_preferences_embedding_model import UserPreferencesEmbedding
 from app.models.reading_history_model import ReadingHistory
 from app.dal.database import db
@@ -68,6 +70,27 @@ class UserRepository:
         if book in user.saved_books:
             user.saved_books.remove(book)
             db.session.commit()
+            
+    @staticmethod
+    def get_user_liked_books(user_id):
+        latest_interaction_subquery = (
+            db.session.query(
+                Interaction.book_id,
+                func.max(Interaction.timestamp).label('latest_interaction_time')
+            )
+            .filter(Interaction.user_id == user_id)
+            .group_by(Interaction.book_id)
+            .subquery()
+        )
+
+        # Main query to get books with latest interaction being 'like'
+        return db.session.query(Book).join(Interaction, Interaction.book_id == Book.id).join(
+            latest_interaction_subquery, 
+            latest_interaction_subquery.c.book_id == Interaction.book_id
+        ).filter(
+            Interaction.timestamp == latest_interaction_subquery.c.latest_interaction_time,
+            Interaction.interaction_type == 'like'
+        ).all()
             
     @staticmethod
     def update_user_info(user_id, age, gender):

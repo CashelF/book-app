@@ -5,7 +5,9 @@ from sqlalchemy.sql import text
 
 class InteractionType(Enum):
     LIKE = 'like'
+    UNLIKE = 'unlike'
     SAVE = 'save'
+    UNSAVE = 'unsave'
     VIEW = 'view'
 
 class Interaction(db.Model):

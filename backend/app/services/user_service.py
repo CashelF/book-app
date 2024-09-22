@@ -1,6 +1,7 @@
 # app/services/user_service.py
 import numpy as np
 from transformers import BertModel, BertTokenizer
+from app.models.interaction_model import InteractionType
 from app.dal.user_repository import UserRepository
 from app.dal.reading_history_repository import ReadingHistoryRepository
 
@@ -49,6 +50,11 @@ class UserService:
     def get_user_saved_books(user_id):
         user = UserRepository.get_user_by_id(user_id)
         return [book.to_dict() for book in user.saved_books]
+    
+    @staticmethod
+    def get_user_liked_books(user_id):
+        liked_books = UserRepository.get_user_liked_books(user_id)
+        return [book.to_dict() for book in liked_books]
     
     @staticmethod
     def update_user_info(user_id, age, gender):

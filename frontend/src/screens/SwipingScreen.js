@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
+import { LikedBooksContext } from '../contexts/LikedBooksContext';
 import { SavedBooksContext } from '../contexts/SavedBooksContext';
 import { Ionicons } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
@@ -14,12 +15,26 @@ const SwipingScreen = () => {
   const [books, setBooks] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const { savedBooks, setSavedBooks } = React.useContext(SavedBooksContext);
+  const { savedBooks, setSavedBooks } = useContext(SavedBooksContext);
+  const { likedBooks, setLikedBooks } = useContext(LikedBooksContext);
+
+  const [isLiked, setIsLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
 
   useEffect(() => {
     fetchBooks();
     postPreferenceEmbedding();
   }, []);
+
+  useEffect(() => {
+    const currentBook = books[currentIndex];
+    if (currentBook && Array.isArray(savedBooks)) {
+      setIsSaved(savedBooks.some(book => book.id === currentBook.id));
+    }
+    if (currentBook && Array.isArray(likedBooks)) {
+      setIsLiked(likedBooks.some(book => book.id === currentBook.id));
+    }
+  }, [currentIndex, books, savedBooks, likedBooks]);
 
   const fetchBooks = async () => {
     setLoading(true);
@@ -69,51 +84,46 @@ const SwipingScreen = () => {
   };
 
   const handleLike = async () => {
+    const currentBook = books[currentIndex];
+    const token = await AsyncStorage.getItem('access_token');
+
     try {
-      const token = await AsyncStorage.getItem('access_token');
-      const currentBook = books[currentIndex];
-      await axios.post(
-        `${API_URL}/api/interactions/like`,
-        {
-          book_id: currentBook.id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          }
-        }
-      );
+      if (isLiked) {
+        await axios.post(`${API_URL}/api/interactions/unlike`, { book_id: currentBook.id }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setLikedBooks(likedBooks.filter(book => book.id !== currentBook.id));
+        setIsLiked(false);
+      } else {
+        await axios.post(`${API_URL}/api/interactions/like`, { book_id: currentBook.id }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setLikedBooks([...likedBooks, currentBook]);
+        setIsLiked(true);
+      }
     } catch (error) {
       console.error('Error recording like interaction:', error);
     }
   };
 
   const handleSave = async () => {
+    const currentBook = books[currentIndex];
+    const token = await AsyncStorage.getItem('access_token');
+  
     try {
-      const token = await AsyncStorage.getItem('access_token');
-      const currentBook = books[currentIndex];
-  
-      const isAlreadySaved = savedBooks.some(book => book.id === currentBook.id);
-  
-      if (isAlreadySaved) {
-        await axios.post(
-          `${API_URL}/api/interactions/unsave`,
-          { book_id: currentBook.id },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-  
+      if (isSaved) {
+        await axios.post(`${API_URL}/api/interactions/unsave`, { book_id: currentBook.id }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setSavedBooks(savedBooks.filter(book => book.id !== currentBook.id));
-        return;
+        setIsSaved(false);
+      } else {
+        await axios.post(`${API_URL}/api/interactions/save`, { book_id: currentBook.id }, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setSavedBooks([...savedBooks, currentBook]);
+        setIsSaved(true);
       }
-  
-      await axios.post(
-        `${API_URL}/api/interactions/save`,
-        { book_id: currentBook.id },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-  
-      setSavedBooks([...savedBooks, currentBook]);
-  
     } catch (error) {
       console.error('Error recording save interaction:', error);
     }
@@ -153,11 +163,20 @@ const SwipingScreen = () => {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-        <TouchableOpacity onPress={handleSave} style={styles.button}>
-          <Entypo name="bookmark" size={72} color="#E94057" style={styles.swipeIcons}/>
+      <TouchableOpacity onPress={handleSave} style={styles.button}>
+          <Entypo 
+            name="bookmark" 
+            size={72} 
+            color={isSaved ? "#FFD700" : "#E94057"}
+            style={styles.swipeIcons}
+          />
         </TouchableOpacity>
         <TouchableOpacity onPress={handleLike} style={styles.button}>
-          <Ionicons name="heart-circle" size={72} color="green" />
+          <Ionicons 
+            name="heart-circle" 
+            size={72} 
+            color={isLiked ? "red" : "green"}
+          />
         </TouchableOpacity>
       </View>
     </GestureRecognizer>

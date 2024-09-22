@@ -44,6 +44,19 @@ def like_book():
     InteractionService.like_interaction(user_id, book_id)
     return jsonify({"message": "Book liked"}), 200
 
+# Unlike interaction
+@interactions_bp.route('/unlike', methods=['POST'])
+@jwt_required()
+def unlike_book():
+    user_id = get_jwt_identity()
+    data = request.get_json()
+    book_id = data.get('book_id')
+    if not book_id:
+        return jsonify({"error": "Book ID is required"}), 400
+    
+    InteractionService.unlike_interaction(user_id, book_id)
+    return jsonify({"message": "Book unliked"}), 200
+
 # View interaction
 @interactions_bp.route('/view', methods=['POST'])
 @jwt_required()
