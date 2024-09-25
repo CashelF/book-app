@@ -7,11 +7,12 @@ import SearchBar from "react-native-dynamic-search-bar";
 import { SavedBooksContext } from '../contexts/SavedBooksContext';
 import { UserContext } from '../contexts/UserContext';
 import BookList from '../components/BookList';
+import { useNavigation } from '@react-navigation/native';
 
 const SavedBooksScreen = () => {
   const { savedBooks, loading } = useContext(SavedBooksContext);
   const { username, fetchUserProfile } = useContext(UserContext);
-
+  const navigation = useNavigation();
   useEffect(() => {
     if (!username) {
       fetchUserProfile();
@@ -46,7 +47,9 @@ const SavedBooksScreen = () => {
 
         <BookList 
           books={savedBooks} 
-          onBookPress={(book) => console.log(`Selected book: ${book.title}`)}  // Handle book press
+          //onBookPress={(book) => console.log(`Selected book: ${book.title}`)}  // Handle book press
+          onBookPress={(book) => navigation.navigate('Description', {book})}
+          
         />
 
       </ScrollView>

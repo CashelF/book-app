@@ -6,6 +6,8 @@ import SignUpScreen from './screens/SignUpScreen';
 import HomeScreen from './screens/HomeScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
 import ReadingHistoryScreen from './screens/ReadingHistoryScreen';
+import BookDescriptionScreen from './screens/BookDescriptionScreen';
+import SavedBooksScreen from './screens/SavedBooksScreen';
 import { LikedBooksProvider } from './contexts/LikedBooksContext';
 import { SavedBooksProvider } from './contexts/SavedBooksContext';
 import { UserProvider } from './contexts/UserContext';
@@ -40,9 +42,19 @@ function App() {
                 options={{ headerShown: false }} 
               />
               <Stack.Screen 
+                name="SavedBooksScreen" 
+                component={SavedBooksScreen} 
+                options={{ headerShown: false }} 
+              />
+              <Stack.Screen 
                 name="Home" 
                 component={HomeScreen} 
                 options={{ headerShown: false }} 
+              />
+              <Stack.Screen
+                name="Description"
+                component={BookDescriptionScreen}
+                options={{headerShown: false}}
               />
             </Stack.Navigator>
           </NavigationContainer>
