@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, Image, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, Image, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -141,6 +141,7 @@ const SwipingScreen = () => {
   const currentBook = books[currentIndex];
 
   return (
+
     <GestureRecognizer
       onSwipeUp={onSwipeUp}
       onSwipeDown={onSwipeDown}
