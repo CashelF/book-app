@@ -7,6 +7,7 @@ import { LikedBooksContext } from '../contexts/LikedBooksContext';
 import { API_URL } from '@env';
 import { PaperProvider, TextInput } from 'react-native-paper';
 import { SocialIcon } from '@rneui/themed';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 const { height } = Dimensions.get('window');
@@ -15,6 +16,7 @@ const { height } = Dimensions.get('window');
 <TouchableOpacity>
         <Text style={styles.forgot}>Forgot password?</Text>
       </TouchableOpacity>
+      <ion-icon name="arrow-back-outline"></ion-icon>
 */
 
 const calculateFontSize = () => {
