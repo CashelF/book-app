@@ -5,6 +5,7 @@ import { API_URL } from '@env';
 import { UserContext } from '../contexts/UserContext';
 import { PaperProvider, TextInput } from 'react-native-paper';
 import { SocialIcon } from '@rneui/themed';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 const { height } = Dimensions.get('window');
@@ -52,7 +53,15 @@ export default function SignUpScreen({ navigation }) {
   return (
     <PaperProvider>
     <View style={styles.container}>
-      <View>
+      <View style={styles.backButtonView}>
+        <TouchableOpacity onPress={() => navigation.navigate('ChooseLoginSignUpScreen')}>
+          <Ionicons 
+                  name="arrow-back-outline" 
+                  size={30} 
+                  color={"#19191B"}
+                  
+                  />
+          </TouchableOpacity>
       </View>
       <View>
         <View style={styles.titleContainer}>
@@ -136,6 +145,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'space-around'
+  },
+  backButtonView: {
+    width: width * .8,
   },
   signUpTextContainer: {
     flexDirection: 'row',

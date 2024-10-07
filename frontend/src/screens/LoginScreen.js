@@ -17,6 +17,7 @@ const { height } = Dimensions.get('window');
         <Text style={styles.forgot}>Forgot password?</Text>
       </TouchableOpacity>
       <ion-icon name="arrow-back-outline"></ion-icon>
+      <ion-icon name="return-up-back-outline"></ion-icon>
 */
 
 const calculateFontSize = () => {
@@ -66,7 +67,15 @@ export default function LoginScreen({ navigation }) {
   return (
     <PaperProvider>
     <View style={styles.container}>
-      <View>
+      <View style={styles.backButtonView}>
+      <TouchableOpacity onPress={() => navigation.navigate('ChooseLoginSignUpScreen')}>
+        <Ionicons 
+                name="arrow-back-outline" 
+                size={30} 
+                color={"#19191B"}
+                
+                />
+        </TouchableOpacity>
       </View>
       <View>
         <View style={styles.titleContainer}>
@@ -137,6 +146,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'space-around'
+  },
+  backButtonView: {
+    width: width * .8,
   },
   signUpTextContainer: {
     flexDirection: 'row',
