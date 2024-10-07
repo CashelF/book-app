@@ -5,6 +5,7 @@ import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import HomeScreen from './screens/HomeScreen';
 import UserInfoScreen from './screens/UserInfoScreen';
+import ChooseLoginSignUpScreen from './screens/ChooseLoginSignUpScreen';
 import ReadingHistoryScreen from './screens/ReadingHistoryScreen';
 import { LikedBooksProvider } from './contexts/LikedBooksContext';
 import { SavedBooksProvider } from './contexts/SavedBooksContext';
@@ -18,7 +19,7 @@ function App() {
       <SavedBooksProvider>
         <UserProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="Login">
+            <Stack.Navigator initialRouteName="ChooseLoginSignUpScreen">
               <Stack.Screen 
                 name="Login" 
                 component={LoginScreen} 
@@ -42,6 +43,11 @@ function App() {
               <Stack.Screen 
                 name="Home" 
                 component={HomeScreen} 
+                options={{ headerShown: false }} 
+              />
+              <Stack.Screen 
+                name="ChooseLoginSignUpScreen" 
+                component={ChooseLoginSignUpScreen} 
                 options={{ headerShown: false }} 
               />
             </Stack.Navigator>
