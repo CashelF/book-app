@@ -19,7 +19,7 @@ function App() {
       <SavedBooksProvider>
         <UserProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="ChooseLoginSignUpScreen">
+            <Stack.Navigator initialRouteName="UserInfo">
               <Stack.Screen 
                 name="Login" 
                 component={LoginScreen} 
