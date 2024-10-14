@@ -8,6 +8,7 @@ import { LikedBooksContext } from '../contexts/LikedBooksContext';
 import { SavedBooksContext } from '../contexts/SavedBooksContext';
 import { Ionicons } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
@@ -163,32 +164,37 @@ const SwipingScreen = () => {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-      <TouchableOpacity onPress={handleSave} style={styles.button}>
-          <Entypo 
-            name="bookmark" 
-            size={72} 
-            color={isSaved ? "#FFD700" : "#E94057"}
-            style={styles.swipeIcons}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleLike} style={styles.button}>
-          <Ionicons 
-            name="heart-circle" 
-            size={72} 
-            color={isLiked ? "red" : "green"}
-          />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={handleSave} style={styles.button}>
+              <Entypo 
+                name="bookmark" 
+                size={72} 
+                color={isSaved ? "#FFD700" : "#E94057"}
+                style={styles.swipeIcons}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleLike} style={styles.button}>
+              <Ionicons 
+                name="heart-circle" 
+                size={72} 
+                color={isLiked ? "red" : "green"}
+              />
+            </TouchableOpacity>
       </View>
-    </GestureRecognizer>
+      </GestureRecognizer>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    //backgroundColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
+  },
+  safeArea: {
+    flex:1,
+    backgroundColor: 'black'
   },
   menuContainer: {
     flexDirection: 'row',
@@ -200,7 +206,7 @@ const styles = StyleSheet.create({
     padding: 20,
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   image: {
     width: 128,

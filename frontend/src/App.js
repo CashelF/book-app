@@ -10,16 +10,18 @@ import ReadingHistoryScreen from './screens/ReadingHistoryScreen';
 import { LikedBooksProvider } from './contexts/LikedBooksContext';
 import { SavedBooksProvider } from './contexts/SavedBooksContext';
 import { UserProvider } from './contexts/UserContext';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Stack = createStackNavigator();
 
 function App() {
   return (
+    <SafeAreaProvider>
     <LikedBooksProvider>
       <SavedBooksProvider>
         <UserProvider>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="UserInfo">
+            <Stack.Navigator initialRouteName="ChooseLoginSignUpScreen">
               <Stack.Screen 
                 name="Login" 
                 component={LoginScreen} 
@@ -55,6 +57,7 @@ function App() {
         </UserProvider>
       </SavedBooksProvider>
     </LikedBooksProvider>
+    </SafeAreaProvider>
   );
 }
 
