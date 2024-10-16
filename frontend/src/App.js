@@ -11,6 +11,7 @@ import { LikedBooksProvider } from './contexts/LikedBooksContext';
 import { SavedBooksProvider } from './contexts/SavedBooksContext';
 import { UserProvider } from './contexts/UserContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import BookDescriptionScreen from './screens/BookDescriptionScreen';
 
 const Stack = createStackNavigator();
 
@@ -51,6 +52,11 @@ function App() {
                 name="ChooseLoginSignUpScreen" 
                 component={ChooseLoginSignUpScreen} 
                 options={{ headerShown: false }} 
+              />
+              <Stack.Screen
+                name="Description"
+                component={BookDescriptionScreen}
+                options={{headerShown: false}}
               />
             </Stack.Navigator>
           </NavigationContainer>

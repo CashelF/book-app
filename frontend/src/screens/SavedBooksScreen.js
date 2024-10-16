@@ -8,10 +8,12 @@ import { SavedBooksContext } from '../contexts/SavedBooksContext';
 import { UserContext } from '../contexts/UserContext';
 import BookList from '../components/BookList';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
 
 const SavedBooksScreen = () => {
   const { savedBooks, loading } = useContext(SavedBooksContext);
   const { username, fetchUserProfile } = useContext(UserContext);
+  const navigation = useNavigation();
 
   useEffect(() => {
     if (!username) {
@@ -48,7 +50,7 @@ const SavedBooksScreen = () => {
 
         <BookList 
           books={savedBooks} 
-          onBookPress={(book) => console.log(`Selected book: ${book.title}`)}  // Handle book press
+          onBookPress={(book) => navigation.navigate('Description', {book})}
         />
 
       </ScrollView>
