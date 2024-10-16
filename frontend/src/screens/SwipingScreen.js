@@ -142,6 +142,7 @@ const SwipingScreen = () => {
   const currentBook = books[currentIndex];
 
   return (
+    <SafeAreaView style={styles.safeArea}>
     <GestureRecognizer
       onSwipeUp={onSwipeUp}
       onSwipeDown={onSwipeDown}
@@ -181,10 +182,15 @@ const SwipingScreen = () => {
             </TouchableOpacity>
       </View>
       </GestureRecognizer>
+      </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   container: {
     flex: 1,
     //backgroundColor: 'black',
@@ -192,15 +198,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
-  safeArea: {
-    flex:1,
-    backgroundColor: 'black'
-  },
   menuContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    //marginBottom: 20,
   },
   card: {
     padding: 20,
@@ -223,22 +225,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ddd',
     borderRadius: 20,
-    marginBottom: 20,
+    //marginBottom: 20,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
+    //marginBottom: 10,
   },
   subHeaderText: {
-    marginTop: 10,
+    //marginTop: 10,
     color: '#19191B',
     fontSize: 16,
     fontWeight: 'bold'
   },
   descriptionContainer: {
-    height: 350,
+    //height: 350,
     width: '100%',
     marginVertical: 10,
   },
@@ -256,7 +258,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: width * 0.8,
-    marginTop: 20,
+    marginTop: 10,
   },
   button: {
     justifyContent: 'center',
