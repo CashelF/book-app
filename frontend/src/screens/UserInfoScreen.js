@@ -1,8 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, Dimensions } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { API_URL } from '@env';
+import { PaperProvider, TextInput } from 'react-native-paper';
+import { SocialIcon } from '@rneui/themed';
+import { Ionicons } from '@expo/vector-icons';
+
+
+const { width, height } = Dimensions.get('window');
+
+const calculateFontSize = () => {
+  if (width < 360) {
+    return 32; // Small devices
+  } else if (width < 768) {
+    return 40; // Medium devices
+  } else {
+    return 40; // Large devices
+  }
+};
 
 const UserInfoScreen = ({ navigation }) => {
   const [age, setAge] = useState('');
@@ -34,50 +50,78 @@ const UserInfoScreen = ({ navigation }) => {
     }
   };
 
+
+
   return (
+    <PaperProvider>
     <View style={styles.container}>
-      <Text style={styles.title}>Tell us about yourself</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Age"
-        keyboardType="numeric"
-        value={age}
-        onChangeText={setAge}
-      />
-      <Text style={styles.subtitle}>Gender</Text>
-      <View style={styles.genderContainer}>
-        <TouchableOpacity
-          style={[
-            styles.genderButton,
-            gender === 'male' && styles.genderButtonSelected,
-          ]}
-          onPress={() => setGender('male')}
-        >
-          <Text style={styles.genderButtonText}>Male</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.genderButton,
-            gender === 'female' && styles.genderButtonSelected,
-          ]}
-          onPress={() => setGender('female')}
-        >
-          <Text style={styles.genderButtonText}>Female</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[
-            styles.genderButton,
-            gender === 'other' && styles.genderButtonSelected,
-          ]}
-          onPress={() => setGender('other')}
-        >
-          <Text style={styles.genderButtonText}>Other</Text>
-        </TouchableOpacity>
+      <View style={styles.titleContainer}>
+          <Text style={styles.title}>Tell us about</Text>
+          <Text style={styles.title}>yourself</Text>
+      </View>
+      <View>
+        <TextInput
+          style={styles.input}
+          placeholder="Age"
+          keyboardType="numeric"
+          underlineColor="transparent"
+          activeUnderlineColor="transparent"
+          mode='flat'
+          textColor='#938B8B'
+          value={age}
+          onChangeText={setAge}
+          left={<TextInput.Icon icon="duck" style={styles.icon} color={'#938B8B'}/>}
+        />
+        <Text style={styles.subtitle}>Gender</Text>
+        <View style={styles.genderContainer}>
+          <TouchableOpacity
+            style={[
+              styles.genderButton,
+              gender === 'male' && styles.genderButtonSelected,
+            ]}
+            onPress={() => setGender('male')}
+          >
+            <Text style={[
+                    styles.genderButtonText, // Default text style
+                    { color: gender === 'male' ? '#fff' : 'black' } // Change text color based on gender
+                  ]}
+            >
+                Male
+             </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.genderButton,
+              gender === 'female' && styles.genderButtonSelected,
+            ]}
+            onPress={() => setGender('female')}
+          >
+            <Text style={[
+                    styles.genderButtonText, // Default text style
+                    { color: gender === 'female' ? '#fff' : 'black' } // Change text color based on gender
+                  ]}
+            >Female</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[
+              styles.genderButton,
+              gender === 'other' && styles.genderButtonSelected,
+            ]}
+            onPress={() => setGender('other')}
+          >
+            <Text style={[
+                    styles.genderButtonText, // Default text style
+                    { color: gender === 'other' ? '#fff' : 'black' } // Change text color based on gender
+                  ]}
+            >Other</Text>
+          </TouchableOpacity>
+        </View>
       </View>
       <TouchableOpacity style={styles.button} onPress={handleNext}>
         <Text style={styles.buttonText}>Next</Text>
       </TouchableOpacity>
     </View>
+    </PaperProvider>
   );
 };
 
@@ -89,7 +133,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
   },
   title: {
     fontSize: 24,
@@ -98,32 +142,49 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 18,
     marginBottom: 10,
+    alignSelf: 'center'
   },
   input: {
-    width: screenWidth > 600 ? '50%' : '100%',
+    height: 40,
+    color: 'black',
+    marginBottom: 12,
     padding: 10,
-    marginVertical: 10,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
+    borderWidth: 0,
+    //width: screenWidth > 600 ? '50%' : '100%',
+    width: width * .8,
+    paddingVertical: 2,
+    backgroundColor: '#F8F8F8',
+    borderRadius: 5
   },
   genderContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    width: screenWidth > 600 ? '50%' : '100%',
+    //width: screenWidth > 600 ? '50%' : '100%',
+    width: width * .8,
     marginVertical: 10,
+  },
+  titleContainer: {
+    width: width * .8,
+    alignItems: 'flex-start',
+    marginBottom: height * .05
+  },
+  title: {
+    fontSize: calculateFontSize(),
+    fontWeight: 'bold',
   },
   genderButton: {
     flex: 1,
     padding: 10,
     marginHorizontal: 5,
-    borderColor: '#ccc',
+    //borderColor: '#ccc',
+    borderColor: '#DCD3D3',
     borderWidth: 1,
-    borderRadius: 5,
+    borderRadius: 50,
     alignItems: 'center',
   },
   genderButtonSelected: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: '#D45555',
+    borderWidth: 0
   },
   genderButtonText: {
     color: 'black',
@@ -131,9 +192,10 @@ const styles = StyleSheet.create({
   button: {
     marginTop: 20,
     padding: 15,
-    backgroundColor: '#FF6B6B',
-    borderRadius: 5,
-    width: screenWidth > 600 ? '50%' : '100%',
+    backgroundColor: '#D45555',
+    borderRadius: 50,
+    //width: screenWidth > 600 ? '50%' : '100%',
+    width: width * .8,
     alignItems: 'center',
   },
   buttonText: {

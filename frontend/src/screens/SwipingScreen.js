@@ -8,6 +8,7 @@ import { LikedBooksContext } from '../contexts/LikedBooksContext';
 import { SavedBooksContext } from '../contexts/SavedBooksContext';
 import { Ionicons } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const { width } = Dimensions.get('window');
 
@@ -141,6 +142,7 @@ const SwipingScreen = () => {
   const currentBook = books[currentIndex];
 
   return (
+    <SafeAreaView style={styles.safeArea}>
     <GestureRecognizer
       onSwipeUp={onSwipeUp}
       onSwipeDown={onSwipeDown}
@@ -163,44 +165,50 @@ const SwipingScreen = () => {
         </View>
       </View>
       <View style={styles.buttonContainer}>
-      <TouchableOpacity onPress={handleSave} style={styles.button}>
-          <Entypo 
-            name="bookmark" 
-            size={72} 
-            color={isSaved ? "#FFD700" : "#E94057"}
-            style={styles.swipeIcons}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleLike} style={styles.button}>
-          <Ionicons 
-            name="heart-circle" 
-            size={72} 
-            color={isLiked ? "red" : "green"}
-          />
-        </TouchableOpacity>
+          <TouchableOpacity onPress={handleSave} style={styles.button}>
+              <Entypo 
+                name="bookmark" 
+                size={72} 
+                color={isSaved ? "#FFD700" : "#E94057"}
+                style={styles.swipeIcons}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={handleLike} style={styles.button}>
+              <Ionicons 
+                name="heart-circle" 
+                size={72} 
+                color={isLiked ? "red" : "green"}
+              />
+            </TouchableOpacity>
       </View>
-    </GestureRecognizer>
+      </GestureRecognizer>
+      </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
   container: {
     flex: 1,
+    //backgroundColor: 'black',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
   },
   menuContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 20,
+    //marginBottom: 20,
   },
   card: {
     padding: 20,
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   image: {
     width: 128,
@@ -217,22 +225,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ddd',
     borderRadius: 20,
-    marginBottom: 20,
+    //marginBottom: 20,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 10,
+    //marginBottom: 10,
   },
   subHeaderText: {
-    marginTop: 10,
+    //marginTop: 10,
     color: '#19191B',
     fontSize: 16,
     fontWeight: 'bold'
   },
   descriptionContainer: {
-    height: 350,
+    //height: 350,
     width: '100%',
     marginVertical: 10,
   },
@@ -250,7 +258,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     width: width * 0.8,
-    marginTop: 20,
+    marginTop: 10,
   },
   button: {
     justifyContent: 'center',

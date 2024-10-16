@@ -7,6 +7,7 @@ import SearchBar from "react-native-dynamic-search-bar";
 import { SavedBooksContext } from '../contexts/SavedBooksContext';
 import { UserContext } from '../contexts/UserContext';
 import BookList from '../components/BookList';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SavedBooksScreen = () => {
   const { savedBooks, loading } = useContext(SavedBooksContext);
@@ -27,6 +28,7 @@ const SavedBooksScreen = () => {
   }
 
   return (
+    <SafeAreaView style={styles.safeArea}>
     <View style={styles.outerContainer}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
@@ -35,7 +37,7 @@ const SavedBooksScreen = () => {
         </View>
         <View style={styles.headerTextContainer}>
           <Text style={styles.welcomeText}>{username ? `Welcome back, ${username}!` : 'Welcome back!'}</Text>
-          <Text style={styles.subHeaderText}>Here are your saved and books!</Text>
+          <Text style={styles.subHeaderText}>Here are your saved books!</Text>
         </View>
         <SearchBar
           style={styles.searchBar}
@@ -51,13 +53,18 @@ const SavedBooksScreen = () => {
 
       </ScrollView>
     </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'white',
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: 'white',
   },
   scrollContainer: {
     flexGrow: 1,

@@ -23,6 +23,7 @@ export default function SignUpScreen({ navigation }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+ 
 
   const { setUsername: setGlobalUsername } = useContext(UserContext);
 
@@ -77,7 +78,7 @@ export default function SignUpScreen({ navigation }) {
           activeUnderlineColor="transparent"
           mode='flat'
           keyboardType="email-address"
-          value={email}
+          value={username}
           onChangeText={setUsername}
           left={<TextInput.Icon icon="account" style={styles.icon} color={'#938B8B'}/>}
         />
