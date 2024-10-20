@@ -1,10 +1,10 @@
 
 import React, { useEffect, useState } from 'react';
-import { FlatList, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView} from 'react-native';
+import { FlatList, View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Linking} from 'react-native';
 import Modal from 'react-native-modal';
 import axios from 'axios';
 
-const BookDes = ({ isPageVisible, children }) => {
+const BookDes = ({ isPageVisible, reviews, children }) => {
   return (
     <Modal isVisible={isPageVisible} /*animationType="fade"*/ >
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -16,14 +16,27 @@ const BookDes = ({ isPageVisible, children }) => {
   );
 };
 
-const BookItem = ({ title, author, imageUrl, description }) => {
+const BookReview = ({ author, pubdate, summary, url }) => {
+  return(
+    <View style={styles.bookItem}>
+      <Text style={styles.bookAuthor}
+            onPress={() => Linking.openURL(url)}>
+        {author}
+      </Text>
+      <Text style={styles.bookAuthor}>{pubdate}</Text>
+      <Text style={styles.bookAuthor}>{summary}</Text>
+    </View>
+  )
+};
+
+const BookItem = ({ title, author, imageUrl, description, reviews }) => {
   const [isPageVisible, setIsPageVisible] = React.useState(false);
 
   const pageToggle = () => setIsPageVisible(() => !isPageVisible);
 
   return (
     <View style={styles.bookItem}>
-      <BookDes isPageVisible={isPageVisible}>
+      <BookDes isPageVisible={isPageVisible} reviews={reviews}>
         <View style={styles.bookItem}>
           <TouchableOpacity onPress={pageToggle} style={{ marginTop: 10 }}>
             <Text style={styles.bookTitle}>{title}</Text>
@@ -32,6 +45,25 @@ const BookItem = ({ title, author, imageUrl, description }) => {
           <ScrollView>
           <Text style={styles.bookAuthor}>{description}</Text>
           </ScrollView>
+          <Text style={styles.bookTitle}>Reviews</Text>
+          <FlatList
+            data={reviews}
+            renderItem={({ item }) => (
+              <BookReview
+                author={item.byline}
+                pubdate={item.publication_dt}
+                summary={item.summary}
+                url={item.url}
+              />
+            )}
+            keyExtractor={(item) => item.byline}
+            numColumns={2}
+            columnWrapperStyle={styles.row}
+            showsVerticalScrollIndicator={true}
+            contentContainerStyle={{
+              paddingBottom: 500, 
+            }}
+          />
         </View>
       </BookDes>
       <TouchableOpacity onPress={pageToggle}>
@@ -51,8 +83,18 @@ const BookGrid = ({ bookIds }) => {
       var bookList = [];
       const bookIdsParam = bookIds.join('|');
       for(var i = 0; i < bookIds.length; i++){
-        const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${bookIds[i]}`);
-        bookList.push(response.data);
+        console.log(`begin ${i}`);
+        const response = await axios.get(`https://www.googleapis.com/books/v1/volumes/${bookIds[i]}?key=AIzaSyBz-Ubop-muTEKBsyjpjy2fzRTR8xNFjJE`);
+        console.log("reviews get");
+        console.log(response.data.volumeInfo.title);
+        const nyApiKey = 'GKZX8I8H7bDEejNBcUcJL42PAApB2C9b';
+        const getReviewString = `https://api.nytimes.com/svc/books/v3/reviews.json?title=${response.data.volumeInfo.title}&api-key=${nyApiKey}`
+        console.log(getReviewString);
+        const reviewsResponse = await axios.get(getReviewString, {timeout: 2000});
+        console.log("reviews gotten");
+        console.log(reviewsResponse.data.results);
+        var bookentry = {id: bookIds[i],"infoItem":response.data,"reviewItem":reviewsResponse.data.results};
+        bookList.push(bookentry);
       }
       setBooks(bookList);
     };
@@ -68,10 +110,11 @@ const BookGrid = ({ bookIds }) => {
       data={books}
       renderItem={({ item }) => (
         <BookItem
-          title={item.volumeInfo.title}
-          author={item.volumeInfo.authors[0]}
-          imageUrl={item.volumeInfo.imageLinks.thumbnail}
-          description={item.volumeInfo.description}
+          title={item.infoItem.volumeInfo.title}
+          author={item.infoItem.volumeInfo.authors[0]}
+          imageUrl={item.infoItem.volumeInfo.imageLinks.thumbnail}
+          description={item.infoItem.volumeInfo.description}
+          reviews={item.reviewItem}
         />
       )}
       keyExtractor={(item) => item.id}
