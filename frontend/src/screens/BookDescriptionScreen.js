@@ -1,8 +1,12 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import { View, Text, Image, StyleSheet, Dimensions, ActivityIndicator, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
 import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { SavedBooksContext } from '../contexts/SavedBooksContext';
+import { API_URL } from '@env';
 
 const { width } = Dimensions.get('window');
 
@@ -11,23 +15,47 @@ const BookDescriptionScreen = ({route}) => {
     const navigation = useNavigation();
     console.log(book)
     const [isSaved, setIsSaved] = useState(true);
+    const { savedBooks, setSavedBooks } = useContext(SavedBooksContext);
     const handleUnsaving = () => {
       // Your logic to handle unsaving
       console.log('Bookmark toggled');
       setIsSaved(prevState => !prevState); // Toggle the saved state
     };
 
+    const handleSave = async () => {
+      //const currentBook = books[currentIndex];
+      const token = await AsyncStorage.getItem('access_token');
+    
+      try {
+        if (isSaved) {
+          await axios.post(`${API_URL}/api/interactions/unsave`, { book_id: book.id }, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setSavedBooks(savedBooks.filter(b => b.id !== book.id));
+          setIsSaved(false);
+        } else {
+          await axios.post(`${API_URL}/api/interactions/save`, { book_id: book.id }, {
+            headers: { Authorization: `Bearer ${token}` }
+          });
+          setSavedBooks(savedBooks =>[...savedBooks, book]);
+          setIsSaved(true);
+        }
+      } catch (error) {
+        console.error('Error recording save interaction:', error);
+      }
+    };
+    //  <TouchableOpacity onPress={() => navigation.navigate('Home', { screen: 'Saved Books' })}>
     return (
         <SafeAreaView>
           <View style={styles.topBar}>
-            <TouchableOpacity onPress={() => navigation.navigate('Home', { screen: 'Saved Books' })}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
               <Ionicons 
                 name="arrow-back-outline" 
                 size={30} 
                 color={"#19191B"}
               />
             </TouchableOpacity>
-            <TouchableOpacity onPress={handleUnsaving}>
+            <TouchableOpacity onPress={handleSave}>
               <Ionicons 
                 name="bookmark" 
                 size={30} 

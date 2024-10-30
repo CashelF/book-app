@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL } from '@env';
 import { View, Text, ScrollView, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
@@ -9,17 +9,28 @@ import { UserContext } from '../contexts/UserContext';
 import BookList from '../components/BookList';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect } from '@react-navigation/native';
 
 const SavedBooksScreen = () => {
   const { savedBooks, loading } = useContext(SavedBooksContext);
   const { username, fetchUserProfile } = useContext(UserContext);
   const navigation = useNavigation();
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     if (!username) {
       fetchUserProfile();
     }
   }, [username]);
+
+ 
+  const filteredBooks = savedBooks.filter(book => 
+    book.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const clearSearch = () => {
+    setSearchTerm('');
+  };
 
   if (loading) {
     return (
@@ -34,7 +45,11 @@ const SavedBooksScreen = () => {
     <View style={styles.outerContainer}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
-          <Ionicons name="menu" size={32} color="black" style={styles.menuIcon} />
+          <Ionicons 
+              name="menu" 
+              size={32} color="black" 
+              style={styles.menuIcon} 
+             />
           <View style={styles.circleIcon}></View>
         </View>
         <View style={styles.headerTextContainer}>
@@ -44,12 +59,13 @@ const SavedBooksScreen = () => {
         <SearchBar
           style={styles.searchBar}
           placeholder="Search here"
-          onPress={() => alert("onPress")}
-          onChangeText={(text) => console.log(text)}
+          //onPress={() => alert("onPress")}
+          onChangeText={(text) => setSearchTerm(text)}
+          onClearPress={clearSearch}
         />
 
         <BookList 
-          books={savedBooks} 
+          books={filteredBooks} 
           onBookPress={(book) => navigation.navigate('Description', {book})}
         />
 

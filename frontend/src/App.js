@@ -12,7 +12,6 @@ import { SavedBooksProvider } from './contexts/SavedBooksContext';
 import { UserProvider } from './contexts/UserContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import BookDescriptionScreen from './screens/BookDescriptionScreen';
-
 const Stack = createStackNavigator();
 
 function App() {

@@ -10,7 +10,7 @@ import { Ionicons } from '@expo/vector-icons';
 import Entypo from '@expo/vector-icons/Entypo';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const { width } = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
 const SwipingScreen = () => {
   const [books, setBooks] = useState([]);
@@ -141,8 +141,10 @@ const SwipingScreen = () => {
 
   const currentBook = books[currentIndex];
 
-  return (
+/*
+return (
     <SafeAreaView style={styles.safeArea}>
+    
     <GestureRecognizer
       onSwipeUp={onSwipeUp}
       onSwipeDown={onSwipeDown}
@@ -157,7 +159,9 @@ const SwipingScreen = () => {
           </View>
         )}
         <Text style={styles.title}>{currentBook.title}</Text>
-        <Text style={styles.subHeaderText}>Description</Text>
+        <View style={styles.descriptionTitleContainer}>
+          <Text style={styles.subHeaderText}>Description</Text>
+        </View>
         <View style={styles.descriptionContainer}>
           <ScrollView>
             <Text style={styles.description}>{currentBook.description}</Text>
@@ -185,6 +189,57 @@ const SwipingScreen = () => {
       </SafeAreaView>
   );
 };
+*/
+return (
+  <SafeAreaView style={styles.safeArea}>
+  
+  <GestureRecognizer
+    onSwipeUp={onSwipeUp}
+    onSwipeDown={onSwipeDown}
+    style={styles.container}
+  >
+    <View style={styles.card}>
+      {currentBook.cover_image_url ? (
+        <Image source={{ uri: currentBook.cover_image_url }} style={styles.image} />
+      ) : (
+        <View style={styles.noImage}>
+          <Text>No Image Available</Text>
+        </View>
+      )}
+      <Text style={styles.title}>{currentBook.title}</Text>
+      <View style={styles.descriptionTitleContainer}>
+        <Text style={styles.subHeaderText}>Description</Text>
+      </View>
+      <View style={styles.descriptionContainer}>
+        <ScrollView>
+          <Text style={styles.description}>{currentBook.description}</Text>
+        </ScrollView>
+      </View>
+    </View>
+    <View style={styles.buttonContainer}>
+        <TouchableOpacity onPress={handleSave} style={styles.button}>
+            <Entypo 
+              name="bookmark" 
+              size={72} 
+              color={isSaved ? "#FFD700" : "#E94057"}
+              style={styles.swipeIcons}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleLike} style={styles.button}>
+            <Ionicons 
+              name="heart-circle" 
+              size={72} 
+              color={isLiked ? "red" : "green"}
+            />
+          </TouchableOpacity>
+    </View>
+    </GestureRecognizer>
+    </SafeAreaView>
+  );
+  
+};
+
+
 
 const styles = StyleSheet.create({
   safeArea: {
@@ -237,12 +292,19 @@ const styles = StyleSheet.create({
     //marginTop: 10,
     color: '#19191B',
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    marginBottom: 10
   },
   descriptionContainer: {
     //height: 350,
+    //width: '100%',
+    height: height * .25,
+    //flexGrow: 1,
+    //marginVertical: 10,
+  },
+  descriptionTitleContainer: {
     width: '100%',
-    marginVertical: 10,
+    //backgroundColor: 'red'
   },
   description: {
     color: '#9D9D9D',
@@ -265,5 +327,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 });
+
 
 export default SwipingScreen;
