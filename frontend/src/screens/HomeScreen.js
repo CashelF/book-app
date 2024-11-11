@@ -23,6 +23,15 @@ const HomeScreen = () => {
         overflow: 'hidden',
       }}
     >
+       <Tab.Screen name="Saved Books" 
+      component={SavedBooksScreen} 
+        options={{
+          tabBarLabel: 'Saved Books',
+          tabBarIcon: () => {
+            return <Ionicons name="home" size={24} color="#D45555" />;
+          }
+        }}
+      />
       <Tab.Screen 
         name="Swiping" 
         component={SwipingScreen} 
@@ -30,15 +39,6 @@ const HomeScreen = () => {
           tabBarLabel: 'Swiping',
           tabBarIcon: () => {
             return <Ionicons name="heart" size={24} color="#D45555" />;
-          }
-        }}
-      />
-      <Tab.Screen name="Saved Books" 
-      component={SavedBooksScreen} 
-        options={{
-          tabBarLabel: 'Saved Books',
-          tabBarIcon: () => {
-            return <Ionicons name="home" size={24} color="#D45555" />;
           }
         }}
       />
