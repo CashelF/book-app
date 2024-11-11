@@ -53,7 +53,7 @@ export default function LoginScreen({ navigation }) {
         await fetchSavedBooks();
         await fetchLikedBooks();
         setUsername(result.username);
-        navigation.navigate('Home');
+        navigation.navigate('HomeDrawer');
       } else {
         Alert.alert('Login Failed', result.message || 'An error occurred');
       }

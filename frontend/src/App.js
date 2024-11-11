@@ -12,6 +12,7 @@ import { SavedBooksProvider } from './contexts/SavedBooksContext';
 import { UserProvider } from './contexts/UserContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import BookDescriptionScreen from './screens/BookDescriptionScreen';
+import DrawerNavigation from './screens/DrawerNavigation';
 const Stack = createStackNavigator();
 
 function App() {
@@ -57,6 +58,11 @@ function App() {
                 component={BookDescriptionScreen}
                 options={{headerShown: false}}
               />
+              <Stack.Screen 
+                  name="HomeDrawer" 
+                  component={DrawerNavigation} 
+                  options={{ headerShown: false }} 
+                />
             </Stack.Navigator>
           </NavigationContainer>
         </UserProvider>

@@ -9,7 +9,6 @@ import { UserContext } from '../contexts/UserContext';
 import BookList from '../components/BookList';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
-import { useFocusEffect } from '@react-navigation/native';
 
 const SavedBooksScreen = () => {
   const { savedBooks, loading } = useContext(SavedBooksContext);
@@ -43,12 +42,51 @@ const SavedBooksScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
     <View style={styles.outerContainer}>
+      <View style={styles.scrollContainer}>
+        <View style={styles.header}>
+          <Ionicons 
+              name="menu" 
+              size={32} color="black" 
+              style={styles.menuIcon} 
+              onPress={() => navigation.toggleDrawer()}
+             />
+          <View style={styles.circleIcon}></View>
+        </View>
+        <View style={styles.headerTextContainer}>
+          <Text style={styles.welcomeText}>{username ? `Welcome back, ${username}!` : 'Welcome back!'}</Text>
+          <Text style={styles.subHeaderText}>Here are your saved books!</Text>
+        </View>
+        <SearchBar
+          style={styles.searchBar}
+          placeholder="Search here"
+          //onPress={() => alert("onPress")}
+          onChangeText={(text) => setSearchTerm(text)}
+          onClearPress={clearSearch}
+        />
+
+        <BookList 
+          books={filteredBooks} 
+          onBookPress={(book) => navigation.navigate('Description', {book})}
+        />
+
+      </View>
+    </View>
+    </SafeAreaView>
+  );
+};
+
+
+/*
+return (
+    <SafeAreaView style={styles.safeArea}>
+    <View style={styles.outerContainer}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.header}>
           <Ionicons 
               name="menu" 
               size={32} color="black" 
               style={styles.menuIcon} 
+              onPress={() => navigation.toggleDrawer()}
              />
           <View style={styles.circleIcon}></View>
         </View>
@@ -74,6 +112,8 @@ const SavedBooksScreen = () => {
     </SafeAreaView>
   );
 };
+
+*/
 
 const styles = StyleSheet.create({
   outerContainer: {
