@@ -39,5 +39,12 @@ backend/venv/
 backend/.env
 backend/scripts/filtered_books.csv
 backend/indexdir/
+backend/app/services/recommendations_submodule/goodreads_data
+backend/app/services/recommendations_submodule/indexdir
+backend/app/services/recommendations_submodule/training_scripts/indexdir
+backend/app/services/recommendations_submodule/training_scripts/synthetic_data.pkl
+backend/scripts/indexdir
 
 frontend/%ProgramData%
+
+all_code.txt

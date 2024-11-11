@@ -30,6 +30,9 @@ class BookRepository:
         return Book.query.filter(Book.id.in_(book_ids)) \
                           .order_by(func.field(Book.id, *book_ids)) \
                           .all()
+    @staticmethod
+    def get_book_by_title(title):
+        return Book.query.filter(func.lower(Book.title) == func.lower(title)).first()
     
     @staticmethod
     def get_book_by_isbn(isbn_13):
@@ -52,6 +55,23 @@ class BookRepository:
                 return None
             
     @staticmethod
+    def get_all_book_parameters_dict():
+        all_parameters = {}
+
+        books = (
+            db.session.query(Book.id, BookParameters.parameters)
+            .join(BookParameters, Book.id == BookParameters.book_id)
+            .all()
+        )
+
+        for book_id, parameters in books:
+            if isinstance(parameters, (bytes, str)):
+                parameters = np.frombuffer(parameters, dtype=np.float32).copy()
+            all_parameters[book_id] = parameters
+
+        return all_parameters
+            
+    @staticmethod
     def save_book_parameters(book_id, parameters):
         book_parameters = BookParameters.query.filter_by(book_id=book_id).first()
         if book_parameters is None:
@@ -59,6 +79,17 @@ class BookRepository:
             db.session.add(book_parameters)
         else:
             book_parameters.parameters = parameters
+        db.session.commit()
+        
+    @staticmethod
+    def save_all_book_parameters_dict(all_book_parameters):
+        for book_id, parameters in all_book_parameters.items():
+            book_parameters = BookParameters.query.filter_by(book_id=book_id).first()
+            if parameters is None:
+                book_parameters = BookParameters(book_id=book_id, parameters=parameters)
+                db.session.add(book_parameters)
+            else:
+                book_parameters.parameters = parameters
         db.session.commit()
 
     @staticmethod

@@ -5,17 +5,17 @@ from app.models.interaction_model import InteractionType
 from app.dal.user_repository import UserRepository
 from app.dal.reading_history_repository import ReadingHistoryRepository
 
-tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-model = BertModel.from_pretrained('bert-base-uncased')
+# tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+# model = BertModel.from_pretrained('bert-base-uncased')
 
 class UserService:
     
-    @staticmethod
-    def get_book_embedding(description):
-        inputs = tokenizer(description, return_tensors='pt', truncation=True, padding=True, max_length=512)
-        outputs = model(**inputs)
-        embedding = outputs.last_hidden_state.mean(dim=1).detach().numpy()
-        return embedding
+    # @staticmethod
+    # def get_book_embedding(description):
+    #     inputs = tokenizer(description, return_tensors='pt', truncation=True, padding=True, max_length=512)
+    #     outputs = model(**inputs)
+    #     embedding = outputs.last_hidden_state.mean(dim=1).detach().numpy()
+    #     return embedding
 
     @staticmethod
     def generate_user_preference_embedding(user_id):
@@ -28,19 +28,20 @@ class UserService:
         
         book_embeddings = []
         for entry in reading_history:
-            book = entry.book
-            description = book.description
-            book_embedding = UserService.get_book_embedding(description)
-            book_embeddings.append(book_embedding)
+            # Convert from binary to float32 array
+            embedding = np.frombuffer(entry.book.embedding, dtype=np.float32)
+            book_embeddings.append(embedding)
         
         if book_embeddings:
+            book_embeddings = np.vstack(book_embeddings)
             user_embedding = np.mean(book_embeddings, axis=0)
         else:
-            user_embedding = np.zeros((1, 768))
+            user_embedding = np.zeros((1536,), dtype=np.float32)
         
         UserRepository.save_user_preferences_embedding(user_id, user_embedding)
 
         return user_embedding
+
 
     @staticmethod
     def get_user_by_id(user_id):
@@ -62,7 +63,8 @@ class UserService:
         
     @staticmethod
     def add_reading_history(user_id, book_id):
-        ReadingHistoryRepository.add_reading_history(user_id, book_id)
+        if not ReadingHistoryRepository.exists(user_id, book_id):
+            ReadingHistoryRepository.add_reading_history(user_id, book_id)
         
     @staticmethod
     def delete_reading_history(user_id, book_id):

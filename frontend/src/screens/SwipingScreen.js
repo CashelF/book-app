@@ -40,7 +40,7 @@ const SwipingScreen = () => {
     setLoading(true);
     try {
       const token = await AsyncStorage.getItem('access_token');
-      const response = await axios.get(`${API_URL}/api/recommendations/content-based`, {
+      const response = await axios.get(`${API_URL}/api/recommendations/contextual-bandits`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

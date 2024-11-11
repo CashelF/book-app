@@ -14,7 +14,7 @@ def recommendations():
 
     recommended_books = ContextualBanditsRecommendationService.get_recommendations(user_id, num_recommendations=num_recommendations)
 
-    return recommended_books
+    return jsonify([book.to_dict() for book in recommended_books])
 
 @recommendations_bp.route('/content-based', methods=['GET'])
 @jwt_required()

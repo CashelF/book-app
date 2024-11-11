@@ -29,11 +29,12 @@ class BookSearchService:
     @staticmethod
     def search_books(query_str):
         with BookSearchService.ix.searcher() as searcher:
-            parser = MultifieldParser(["title", "description", "author", "genres"], schema=BookSearchService.schema)
+            parser = MultifieldParser(["title", "description", "author"], schema=BookSearchService.schema)
             query = parser.parse(query_str)
             results = searcher.search(query, limit=10, sortedby=[ScoreFacet(), FieldFacet("title")])
             books = []
             for result in results:
+                print(result)
                 # Retrieve the full book object from the database using the ISBN
                 book = BookRepository.get_book_by_isbn(result['isbn_13'])
                 if book:

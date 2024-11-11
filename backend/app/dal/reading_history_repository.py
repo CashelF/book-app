@@ -15,3 +15,9 @@ class ReadingHistoryRepository:
         if reading_history:
             db.session.delete(reading_history)
             db.session.commit()
+
+    @staticmethod
+    def exists(user_id, book_id):
+        return db.session.query(
+            db.exists().where(ReadingHistory.user_id == user_id, ReadingHistory.book_id == book_id)
+        ).scalar()

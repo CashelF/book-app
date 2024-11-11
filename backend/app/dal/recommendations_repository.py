@@ -2,6 +2,7 @@ from app.dal.database import db
 from app.models.user_model import User
 from app.models.book_model import Book
 from app.models.book_parameters_model import BookParameters
+from app.dal.user_repository import UserRepository
 import numpy as np
 
 class RecommendationsRepository:
@@ -24,9 +25,22 @@ class RecommendationsRepository:
             user.engagement_rate if user.engagement_rate is not None else 0
         ]
 
+        # Convert features to numpy array
         user_vector = np.array(features, dtype=float).flatten()
+        
+        # Retrieve and decode the user preference embedding
+        preference_embedding = UserRepository.get_user_preferences_embedding(user_id)
+        if preference_embedding is not None:
+            # Convert from binary to float32 array
+            preference_embedding_array = np.frombuffer(preference_embedding, dtype=np.float32)
+        else:
+            # Default to zero array if preference embedding is missing
+            preference_embedding_array = np.zeros((1536,), dtype=np.float32)
+        
+        # Concatenate features and preference embedding
+        full_user_context = np.concatenate((user_vector, preference_embedding_array), dtype=np.float32)
 
-        return user_vector
+        return full_user_context
         
     @staticmethod
     def get_all_parameters():
